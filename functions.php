@@ -99,19 +99,20 @@ function lafka_child_enqueue_styles() {
  *    Action: wp_head — outputs a <style> block that overrides :root variables.
  *    See dynamic-css.php for the full list of --lafka-* variables.
  */
-// add_action( 'wp_head', 'lafka_child_color_overrides', 100 );
-// function lafka_child_color_overrides() {
-//     ?>
-//     <style>
-//         :root {
-//             --lafka-accent-color: #e85d2a;
-//             --lafka-button-color: #e85d2a;
-//             --lafka-button-hover-color: #c44a1e;
-//         }
-//     </style>
-//     
-<?php
-// }
+/*
+add_action( 'wp_head', 'lafka_child_color_overrides', 100 );
+function lafka_child_color_overrides() {
+    ?>
+    <style>
+        :root {
+            --lafka-accent-color: #e85d2a;
+            --lafka-button-color: #e85d2a;
+            --lafka-button-hover-color: #c44a1e;
+        }
+    </style>
+    <?php
+}
+*/
 
 /*
  * 6. Modify the pagination HTML output
