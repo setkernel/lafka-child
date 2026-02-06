@@ -9,21 +9,24 @@ function lafka_child_enqueue_styles() {
 		$child_deps[] = 'lafka-responsive';
 	}
 
-	wp_enqueue_style( 'lafka-child-style',
+	wp_enqueue_style(
+		'lafka-child-style',
 		get_stylesheet_directory_uri() . '/style.css',
 		$child_deps,
 		wp_get_theme()->get( 'Version' )
 	);
 
 	if ( is_rtl() && file_exists( get_stylesheet_directory() . '/styles/rtl.css' ) ) {
-		wp_enqueue_style( 'lafka-child-rtl',
+		wp_enqueue_style(
+			'lafka-child-rtl',
 			get_stylesheet_directory_uri() . '/styles/rtl.css',
 			array( 'lafka-child-style', 'lafka-rtl' )
 		);
 	}
 
 	if ( file_exists( get_stylesheet_directory() . '/js/lafka-front.js' ) ) {
-		wp_enqueue_script( 'lafka-child-front',
+		wp_enqueue_script(
+			'lafka-child-front',
 			get_stylesheet_directory_uri() . '/js/lafka-front.js',
 			array( 'lafka-front' ),
 			wp_get_theme()->get( 'Version' ),
@@ -106,7 +109,8 @@ function lafka_child_enqueue_styles() {
 //             --lafka-button-hover-color: #c44a1e;
 //         }
 //     </style>
-//     <?php
+//     
+<?php
 // }
 
 /*
