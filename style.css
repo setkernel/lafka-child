@@ -2,11 +2,165 @@
 Theme Name: Lafka Child
 Theme URI: https://github.com/setkernel/lafka-child
 Description: Child theme for the Lafka WooCommerce theme. Use this to customize Lafka without modifying the parent theme directly.
-Version: 5.0.0
+Version: 5.1.0
 Template: lafka
 Author: theAlThemist, Contributors
 Author URI: https://github.com/setkernel/lafka-child
 License: GNU General Public License v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: lafka
+*/
+
+/*
+ * ============================================================================
+ * HOW TO USE THIS FILE
+ * ============================================================================
+ *
+ * This stylesheet loads AFTER the parent theme's style.css, so any rule here
+ * overrides the parent. Uncomment a section to activate it.
+ *
+ * The parent theme uses CSS custom properties (--lafka-*) for colors, defined
+ * in :root via dynamic-css.php. Override them here for instant color changes
+ * without touching PHP.
+ * ============================================================================
+ */
+
+
+/* ----------------------------------------------------------------------------
+ * COLOR OVERRIDES (CSS Custom Properties)
+ *
+ * Override any --lafka-* variable. Full list in parent theme dynamic-css.php:
+ *   --lafka-accent-color         Main accent / brand color
+ *   --lafka-logo-bg-color        Logo background
+ *   --lafka-link-color           Default link color
+ *   --lafka-link-hover-color     Link hover color
+ *   --lafka-button-color         Button background
+ *   --lafka-button-hover-color   Button hover background
+ *   --lafka-menu-bg-color        Main menu background
+ *   --lafka-menu-link-color      Menu link text
+ *   --lafka-menu-link-hover-color Menu link hover text
+ *   --lafka-page-title-color     Page/archive title text
+ *   --lafka-new-label-color      "New" product badge
+ *   --lafka-sale-label-color     Sale badge
+ *   --lafka-sidebar-title-color  Widget titles
+ *   --lafka-h1-color … --lafka-h6-color  Heading colors
+ *   --lafka-h1-size  … --lafka-h6-size   Heading sizes
+ * -------------------------------------------------------------------------- */
+
+/*
+:root {
+    --lafka-accent-color: #e85d2a;
+    --lafka-button-color: #e85d2a;
+    --lafka-button-hover-color: #c44a1e;
+    --lafka-link-color: #e85d2a;
+    --lafka-link-hover-color: #c44a1e;
+}
+*/
+
+
+/* ----------------------------------------------------------------------------
+ * TYPOGRAPHY OVERRIDES
+ * -------------------------------------------------------------------------- */
+
+/*
+body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+:root {
+    --lafka-h1-size: 36px;
+    --lafka-h2-size: 28px;
+}
+*/
+
+
+/* ----------------------------------------------------------------------------
+ * HEADER / NAVIGATION
+ * -------------------------------------------------------------------------- */
+
+/*
+#header {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+#main-menu ul.menu > li > a {
+    letter-spacing: 0.5px;
+}
+*/
+
+
+/* ----------------------------------------------------------------------------
+ * PRODUCT CARDS (shop loop)
+ * -------------------------------------------------------------------------- */
+
+/*
+div.prod_hold {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+div.prod_hold .name h3 {
+    font-size: 15px;
+}
+
+div.prod_hold .price_hold .price {
+    font-weight: 600;
+}
+*/
+
+
+/* ----------------------------------------------------------------------------
+ * SINGLE PRODUCT
+ * -------------------------------------------------------------------------- */
+
+/*
+#content div.product div.summary h1.product_title {
+    font-size: 32px;
+}
+
+.lafka-prep-time {
+    display: inline-block;
+    padding: 4px 10px;
+    background: #fef3e6;
+    border-radius: 4px;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+*/
+
+
+/* ----------------------------------------------------------------------------
+ * FOOTER
+ * -------------------------------------------------------------------------- */
+
+/*
+#footer {
+    background-color: #1a1a1a;
+}
+
+#footer .widget h3 {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+*/
+
+
+/* ----------------------------------------------------------------------------
+ * MOBILE ADJUSTMENTS (max-width: 768px)
+ * -------------------------------------------------------------------------- */
+
+/*
+@media only screen and (max-width: 768px) {
+    #header {
+        padding: 10px 0;
+    }
+
+    div.prod_hold .name h3 {
+        font-size: 13px;
+    }
+
+    #content div.product div.summary h1.product_title {
+        font-size: 22px;
+    }
+}
 */
