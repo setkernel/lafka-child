@@ -2,7 +2,7 @@
 Theme Name: Lafka Child
 Theme URI: https://github.com/setkernel/lafka-child
 Description: Child theme for the Lafka WooCommerce theme. Use this to customize Lafka without modifying the parent theme directly.
-Version: 5.3.0
+Version: 5.4.3
 Template: lafka
 Author: theAlThemist, Contributors
 Author URI: https://github.com/setkernel/lafka-child
@@ -29,22 +29,53 @@ Text Domain: lafka
 /* ----------------------------------------------------------------------------
  * COLOR OVERRIDES (CSS Custom Properties)
  *
- * Override any --lafka-* variable. Full list in parent theme dynamic-css.php:
- *   --lafka-accent-color         Main accent / brand color
- *   --lafka-logo-bg-color        Logo background
- *   --lafka-link-color           Default link color
- *   --lafka-link-hover-color     Link hover color
- *   --lafka-button-color         Button background
- *   --lafka-button-hover-color   Button hover background
- *   --lafka-menu-bg-color        Main menu background
- *   --lafka-menu-link-color      Menu link text
- *   --lafka-menu-link-hover-color Menu link hover text
- *   --lafka-page-title-color     Page/archive title text
- *   --lafka-new-label-color      "New" product badge
- *   --lafka-sale-label-color     Sale badge
- *   --lafka-sidebar-title-color  Widget titles
- *   --lafka-h1-color … --lafka-h6-color  Heading colors
- *   --lafka-h1-size  … --lafka-h6-size   Heading sizes
+ * Override any --lafka-* variable (93 total). Full list in parent dynamic-css.php.
+ *
+ * Commonly overridden:
+ *   --lafka-accent-color             Main accent / brand color
+ *   --lafka-link-color               Default link color
+ *   --lafka-link-hover-color         Link hover color
+ *   --lafka-button-color             Button background
+ *   --lafka-button-hover-color       Button hover background
+ *
+ * Typography:
+ *   --lafka-body-font-family         Body font stack
+ *   --lafka-body-font-size           Body font size
+ *   --lafka-body-font-color          Body text color
+ *   --lafka-headings-font-family     Headings font stack
+ *   --lafka-h1-color … h6-color      Heading colors
+ *   --lafka-h1-size  … h6-size       Heading sizes
+ *   --lafka-h1-weight … h6-weight    Heading weights
+ *
+ * Header & Menu:
+ *   --lafka-header-bg-color          Header background
+ *   --lafka-logo-bg-color            Logo background
+ *   --lafka-menu-bg-color            Main menu background
+ *   --lafka-menu-link-color          Menu link text
+ *   --lafka-menu-link-hover-color    Menu link hover text
+ *   --lafka-menu-link-bg-hover-color Menu link hover background
+ *
+ * Product:
+ *   --lafka-price-color              Product price text
+ *   --lafka-price-bg-color           Product price background
+ *   --lafka-add-to-cart-color        Add-to-cart button color
+ *   --lafka-new-label-color          "New" product badge
+ *   --lafka-sale-label-color         Sale badge
+ *
+ * Page Titles:
+ *   --lafka-page-title-color         Page/archive title text
+ *   --lafka-page-title-bg-color      Title section background
+ *   --lafka-page-title-border-color  Title section border
+ *
+ * Footer:
+ *   --lafka-footer-bg-color          Footer background
+ *   --lafka-footer-text-color        Footer body text
+ *   --lafka-footer-link-color        Footer links
+ *   --lafka-footer-title-color       Footer widget titles
+ *   --lafka-footer-copyright-bg-color Copyright bar background
+ *
+ * Sidebar:
+ *   --lafka-sidebar-title-color      Widget titles
  * -------------------------------------------------------------------------- */
 
 /*
