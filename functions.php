@@ -150,3 +150,43 @@ function lafka_child_color_overrides() {
 //     echo esc_html__( 'Free delivery on orders over $30!', 'lafka' );
 //     echo '</div>';
 // }
+
+/**
+ * 9. Minimum order amount for delivery
+ *    Hide all shipping methods except local pickup when cart is below $30 (before tax).
+ *    Customers can still pick up in store regardless of order size.
+ */
+add_filter( 'woocommerce_package_rates', 'lafka_child_minimum_order_for_delivery', 10, 2 );
+function lafka_child_minimum_order_for_delivery( $rates, $package ) {
+	$minimum = 30;
+
+	if ( $package['contents_cost'] < $minimum ) {
+		foreach ( $rates as $rate_id => $rate ) {
+			if ( 'local_pickup' !== $rate->method_id ) {
+				unset( $rates[ $rate_id ] );
+			}
+		}
+	}
+
+	return $rates;
+}
+
+add_action( 'woocommerce_before_cart', 'lafka_child_delivery_minimum_notice' );
+add_action( 'woocommerce_before_checkout_form', 'lafka_child_delivery_minimum_notice' );
+function lafka_child_delivery_minimum_notice() {
+	$minimum = 30;
+	$subtotal = WC()->cart->get_subtotal();
+
+	if ( $subtotal < $minimum ) {
+		$remaining = $minimum - $subtotal;
+		printf(
+			'<div class="woocommerce-info" style="background-color: #e94560; color: #fff; border-top-color: #c4374d; padding: 12px 20px; font-size: 15px; font-weight: 600;">%s</div>',
+			sprintf(
+				/* translators: 1: minimum amount, 2: remaining amount */
+				esc_html__( 'Delivery is available on orders over %1$s. Add %2$s more to your cart for delivery.', 'lafka' ),
+				wp_kses_post( wc_price( $minimum ) ),
+				wp_kses_post( wc_price( $remaining ) )
+			)
+		);
+	}
+}
