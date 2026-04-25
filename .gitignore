@@ -15,6 +15,9 @@ Thumbs.db
 *.swo
 *~
 
+# Test artefacts
+.phpunit.result.cache
+
 # Misc
 *.log
 *.bak

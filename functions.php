@@ -1,6 +1,24 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
+// Pure pricing/promotion helpers (BOGO math, delivery-min predicate).
+// Extracted so they can be unit-tested without booting WP/WC, and so the
+// P2-01 child→plugin migration can lift them with a namespace change.
+require_once __DIR__ . '/inc/lafka-promotions.php';
+
+/**
+ * Whether the lafka-plugin's promotions module owns BOGO + delivery-min today.
+ *
+ * When true, every hook in this file's "Delivery Minimum" + "BOGO 50%" + "BOGO
+ * Promotional Banner" blocks must self-gate to no-op so we don't double-apply
+ * (banner shown twice, BOGO discount applied twice, etc.). The plugin module
+ * (lafka-plugin/incl/promotions/) loads when `is_lafka_promotions()` returns
+ * true; default is false (legacy child implementation stays active).
+ */
+function lafka_child_promotions_owned_by_plugin() {
+	return function_exists( 'is_lafka_promotions' ) && is_lafka_promotions();
+}
+
 add_action( 'wp_enqueue_scripts', 'lafka_child_enqueue_styles', 20 );
 function lafka_child_enqueue_styles() {
 	// Parent already enqueues 'lafka-style' and 'lafka-responsive' — just add child after them.
@@ -155,12 +173,16 @@ function lafka_child_color_overrides() {
  * ─── 9. Delivery Minimum ──────────────────────────────────────────────────────
  * Hide all shipping methods except local pickup when cart is below the minimum.
  * Customers can still pick up in store regardless of order size.
+ *
+ * Threshold + predicate live in inc/lafka-promotions.php so the math is
+ * unit-testable. See LafkaPromotionsTest.
  */
-define( 'LAFKA_CHILD_DELIVERY_MINIMUM', 30 );
-
 add_filter( 'woocommerce_package_rates', 'lafka_child_minimum_order_for_delivery', 10, 2 );
 function lafka_child_minimum_order_for_delivery( $rates, $package ) {
-	if ( $package['contents_cost'] < LAFKA_CHILD_DELIVERY_MINIMUM ) {
+	if ( lafka_child_promotions_owned_by_plugin() ) {
+		return $rates;
+	}
+	if ( lafka_child_should_block_delivery( $package['contents_cost'] ) ) {
 		foreach ( $rates as $rate_id => $rate ) {
 			if ( 'local_pickup' !== $rate->method_id ) {
 				unset( $rates[ $rate_id ] );
@@ -173,6 +195,9 @@ function lafka_child_minimum_order_for_delivery( $rates, $package ) {
 add_action( 'woocommerce_before_cart', 'lafka_child_delivery_minimum_notice' );
 add_action( 'woocommerce_before_checkout_form', 'lafka_child_delivery_minimum_notice' );
 function lafka_child_delivery_minimum_notice() {
+	if ( lafka_child_promotions_owned_by_plugin() ) {
+		return;
+	}
 	if ( ! WC()->cart || WC()->cart->is_empty() ) {
 		return;
 	}
@@ -204,6 +229,9 @@ function lafka_child_delivery_minimum_notice() {
  */
 add_action( 'woocommerce_before_calculate_totals', 'bogo_50_cheapest_item', 20, 1 );
 function bogo_50_cheapest_item( $cart ) {
+	if ( lafka_child_promotions_owned_by_plugin() ) {
+		return;
+	}
 	if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
 		return;
 	}
@@ -229,7 +257,7 @@ function bogo_50_cheapest_item( $cart ) {
 		return;
 	}
 
-	// 2. Expand into individual units, sorted by price ascending (cheapest first).
+	// 2. Expand into individual units. Sort + distribution happen inside the helper.
 	$units = array();
 	foreach ( $cart->get_cart() as $key => $cart_item ) {
 		$price = (float) $cart->cart_contents[ $key ]['_bogo_original_price'];
@@ -237,21 +265,9 @@ function bogo_50_cheapest_item( $cart ) {
 			$units[] = array( 'key' => $key, 'price' => $price );
 		}
 	}
-	usort( $units, function( $a, $b ) {
-		return $a['price'] <=> $b['price'];
-	} );
 
-	// 3. Cheapest floor(total/2) units get 50% off.
-	$discount_count    = floor( $total_quantity / 2 );
-	$discounts_per_key = array();
-
-	for ( $i = 0; $i < $discount_count; $i++ ) {
-		$k = $units[ $i ]['key'];
-		if ( ! isset( $discounts_per_key[ $k ] ) ) {
-			$discounts_per_key[ $k ] = 0;
-		}
-		$discounts_per_key[ $k ]++;
-	}
+	// 3. Distribute the discount across line-item keys (pure helper).
+	$discounts_per_key = lafka_bogo_distribute_discounts( $units );
 
 	// 4. Apply blended price per line item.
 	foreach ( $discounts_per_key as $key => $disc_qty ) {
@@ -259,9 +275,8 @@ function bogo_50_cheapest_item( $cart ) {
 		$qty  = (int) $item['quantity'];
 		$orig = (float) $item['_bogo_original_price'];
 
-		$full_units = $qty - $disc_qty;
-		$savings    = $orig * 0.5 * $disc_qty;
-		$blended    = ( $full_units * $orig + $disc_qty * $orig * 0.5 ) / $qty;
+		$savings = $orig * 0.5 * $disc_qty;
+		$blended = lafka_bogo_blended_price( $orig, $qty, $disc_qty );
 
 		$item['data']->set_price( $blended );
 
@@ -276,6 +291,9 @@ function bogo_50_cheapest_item( $cart ) {
  */
 add_filter( 'woocommerce_get_item_data', 'bogo_50_cart_label', 10, 2 );
 function bogo_50_cart_label( $item_data, $cart_item ) {
+	if ( lafka_child_promotions_owned_by_plugin() ) {
+		return $item_data;
+	}
 	if ( ! empty( $cart_item['_bogo_50'] ) ) {
 		$disc_qty = (int) $cart_item['_bogo_discounted_qty'];
 		$item_data[] = array(
@@ -294,6 +312,9 @@ function bogo_50_cart_label( $item_data, $cart_item ) {
  */
 add_filter( 'woocommerce_cart_item_price', 'bogo_50_display_price', 10, 3 );
 function bogo_50_display_price( $price_html, $cart_item, $cart_item_key ) {
+	if ( lafka_child_promotions_owned_by_plugin() ) {
+		return $price_html;
+	}
 	if ( ! empty( $cart_item['_bogo_50'] ) && isset( $cart_item['_bogo_original_price'] ) ) {
 		$price_html = wc_price( (float) $cart_item['_bogo_original_price'] );
 	}
@@ -305,6 +326,9 @@ function bogo_50_display_price( $price_html, $cart_item, $cart_item_key ) {
  */
 add_filter( 'woocommerce_cart_item_subtotal', 'bogo_50_display_subtotal', 10, 3 );
 function bogo_50_display_subtotal( $subtotal_html, $cart_item, $cart_item_key ) {
+	if ( lafka_child_promotions_owned_by_plugin() ) {
+		return $subtotal_html;
+	}
 	if ( ! empty( $cart_item['_bogo_50'] ) && isset( $cart_item['_bogo_savings'] ) ) {
 		$orig_subtotal = (float) $cart_item['_bogo_original_price'] * (int) $cart_item['quantity'];
 		$savings       = (float) $cart_item['_bogo_savings'];
@@ -325,6 +349,9 @@ function bogo_50_display_subtotal( $subtotal_html, $cart_item, $cart_item_key ) 
  */
 add_action( 'wp_footer', 'bogo_50_dismissible_banner' );
 function bogo_50_dismissible_banner() {
+	if ( lafka_child_promotions_owned_by_plugin() ) {
+		return;
+	}
 	$promo_key = 'bogo50_feb2026';
 	?>
 	<style>
