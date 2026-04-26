@@ -32,4 +32,6 @@
 	<!-- Exclude vendor directories -->
 	<exclude-pattern>/vendor/*</exclude-pattern>
 	<exclude-pattern>/node_modules/*</exclude-pattern>
+	<!-- PHPUnit tests use their own PascalCase naming convention, not WP kebab-case. -->
+	<exclude-pattern>/tests/*</exclude-pattern>
 </ruleset>
