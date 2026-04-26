@@ -38,7 +38,8 @@ function lafka_child_enqueue_styles() {
 		wp_enqueue_style(
 			'lafka-child-rtl',
 			get_stylesheet_directory_uri() . '/styles/rtl.css',
-			array( 'lafka-child-style', 'lafka-rtl' )
+			array( 'lafka-child-style', 'lafka-rtl' ),
+			wp_get_theme()->get( 'Version' )
 		);
 	}
 
@@ -66,6 +67,7 @@ function lafka_child_enqueue_styles() {
  * provide, or when you want version-controlled overrides.
  * ============================================================================
  */
+// phpcs:disable Squiz.PHP.CommentedOutCode.Found -- examples are intentional documentation
 
 /*
  * 1. Force sidebar on/off for specific page types
@@ -120,15 +122,15 @@ function lafka_child_enqueue_styles() {
 /*
 add_action( 'wp_head', 'lafka_child_color_overrides', 100 );
 function lafka_child_color_overrides() {
-    ?>
-    <style>
-        :root {
-            --lafka-accent-color: #e85d2a;
-            --lafka-button-color: #e85d2a;
-            --lafka-button-hover-color: #c44a1e;
-        }
-    </style>
-    <?php
+	?>
+	<style>
+		:root {
+			--lafka-accent-color: #e85d2a;
+			--lafka-button-color: #e85d2a;
+			--lafka-button-hover-color: #c44a1e;
+		}
+	</style>
+	<?php
 }
 */
 
@@ -168,6 +170,7 @@ function lafka_child_color_overrides() {
 //     echo esc_html__( 'Free delivery on orders over $30!', 'lafka' );
 //     echo '</div>';
 // }
+// phpcs:enable Squiz.PHP.CommentedOutCode.Found
 
 /**
  * ─── 9. Delivery Minimum ──────────────────────────────────────────────────────
@@ -212,6 +215,7 @@ function lafka_child_delivery_minimum_notice() {
 		printf(
 			'<div class="woocommerce-info" style="background-color:#e94560;color:#fff;border-top-color:#c4374d;padding:12px 20px;font-size:15px;font-weight:600;">%s</div>',
 			sprintf(
+				/* translators: 1: minimum order amount in store currency, 2: amount remaining to qualify for delivery */
 				esc_html__( 'Delivery is available on orders over %1$s. Add %2$s more to your cart for delivery.', 'lafka' ),
 				wp_kses_post( wc_price( LAFKA_CHILD_DELIVERY_MINIMUM ) ),
 				wp_kses_post( wc_price( $remaining ) )
@@ -262,7 +266,10 @@ function bogo_50_cheapest_item( $cart ) {
 	foreach ( $cart->get_cart() as $key => $cart_item ) {
 		$price = (float) $cart->cart_contents[ $key ]['_bogo_original_price'];
 		for ( $i = 0; $i < $cart_item['quantity']; $i++ ) {
-			$units[] = array( 'key' => $key, 'price' => $price );
+			$units[] = array(
+				'key'   => $key,
+				'price' => $price,
+			);
 		}
 	}
 
@@ -280,7 +287,7 @@ function bogo_50_cheapest_item( $cart ) {
 
 		$item['data']->set_price( $blended );
 
-		$cart->cart_contents[ $key ]['_bogo_50']            = true;
+		$cart->cart_contents[ $key ]['_bogo_50']             = true;
 		$cart->cart_contents[ $key ]['_bogo_discounted_qty'] = $disc_qty;
 		$cart->cart_contents[ $key ]['_bogo_savings']        = $savings;
 	}
@@ -295,10 +302,11 @@ function bogo_50_cart_label( $item_data, $cart_item ) {
 		return $item_data;
 	}
 	if ( ! empty( $cart_item['_bogo_50'] ) ) {
-		$disc_qty = (int) $cart_item['_bogo_discounted_qty'];
+		$disc_qty    = (int) $cart_item['_bogo_discounted_qty'];
 		$item_data[] = array(
 			'name'  => esc_html__( '🎉 Promotion', 'lafka' ),
 			'value' => sprintf(
+				/* translators: %d: number of units in this line item that received the BOGO 50%% discount */
 				esc_html__( 'BOGO 50%% Off applied to %d unit(s)', 'lafka' ),
 				$disc_qty
 			),
@@ -311,6 +319,7 @@ function bogo_50_cart_label( $item_data, $cart_item ) {
  * Show original unit price in the price column (not blended).
  */
 add_filter( 'woocommerce_cart_item_price', 'bogo_50_display_price', 10, 3 );
+// phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter -- WC filter signature
 function bogo_50_display_price( $price_html, $cart_item, $cart_item_key ) {
 	if ( lafka_child_promotions_owned_by_plugin() ) {
 		return $price_html;
@@ -325,6 +334,7 @@ function bogo_50_display_price( $price_html, $cart_item, $cart_item_key ) {
  * Show strikethrough original subtotal + savings in the subtotal column.
  */
 add_filter( 'woocommerce_cart_item_subtotal', 'bogo_50_display_subtotal', 10, 3 );
+// phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter -- WC filter signature
 function bogo_50_display_subtotal( $subtotal_html, $cart_item, $cart_item_key ) {
 	if ( lafka_child_promotions_owned_by_plugin() ) {
 		return $subtotal_html;
@@ -337,6 +347,7 @@ function bogo_50_display_subtotal( $subtotal_html, $cart_item, $cart_item_key ) 
 		$subtotal_html  = '<del>' . wc_price( $orig_subtotal ) . '</del> ';
 		$subtotal_html .= wc_price( $new_subtotal );
 		$subtotal_html .= '<br><small style="color:#4ecca3;font-weight:600;">';
+		/* translators: %s: amount saved in store currency, formatted by wc_price() */
 		$subtotal_html .= sprintf( esc_html__( 'You save %s', 'lafka' ), wc_price( $savings ) );
 		$subtotal_html .= '</small>';
 	}
@@ -366,7 +377,7 @@ function bogo_50_dismissible_banner() {
 			transform: translateY(-100%);
 			opacity: 0;
 			transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-			            opacity 0.3s ease;
+						opacity 0.3s ease;
 			box-shadow: 0 4px 14px rgba(0,0,0,0.25);
 		}
 		#bogoBanner.visible {

@@ -58,7 +58,7 @@ function lafka_bogo_distribute_discounts( array $units ) {
 		if ( ! isset( $distribution[ $k ] ) ) {
 			$distribution[ $k ] = 0;
 		}
-		$distribution[ $k ]++;
+		++$distribution[ $k ];
 	}
 
 	return $distribution;

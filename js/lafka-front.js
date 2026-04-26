@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars -- $ is jQuery alias for the commented-out customization examples below
 (function ($) {
     "use strict";
 
