@@ -30,6 +30,32 @@ Text Domain: lafka
  * ACCESSIBILITY HELPERS
  * -------------------------------------------------------------------------- */
 
+/* P6-SEO-9 / P6-A11Y-5: section-subtitle replaces misused <h6> for visual
+   subtitles that follow <h2> / <h1> headings (Lighthouse heading-order fix).
+   WCAG AA: #5e5e5e ≈ 4.6:1 on white (was #999 = 2.84:1 — non-compliant). */
+.section-subtitle {
+    text-align: center;
+    font-size: 14.3pt;
+    color: #5e5e5e;
+    font-weight: 400;
+    margin: 0 0 1em;
+    line-height: 1.4;
+}
+
+/* P6-SEO-9 / P6-A11Y-5: .ingredients replaces misused <h6> for food-item
+   ingredient text inside .foodmenu-unit-info. Preserves former h6 visual
+   (italic, 15px, #999, 0 0 8px margin). Semantic: descriptive content, not
+   a subtitle, so .section-subtitle is not appropriate here. */
+.foodmenu-unit-info .ingredients {
+    width: auto !important;
+    margin: 0 0 8px 0 !important;
+    font-size: 15px;
+    font-style: italic;
+    font-weight: 400;
+    color: #999;
+    vertical-align: middle;
+}
+
 /* WP-standard visually-hidden helper. P6-A11Y-1: needed for Owl Carousel
    navText labels. Non-decorative, but visually invisible. */
 .screen-reader-text {
