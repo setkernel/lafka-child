@@ -494,3 +494,18 @@ add_filter( 'wp_get_attachment_image_attributes', function ( $attr, $attachment 
 	}
 	return $attr;
 }, 10, 2 );
+
+/**
+ * P6-SEO-7: WooCommerce shop archive (`/order/`) was emitting two <h1>s — one
+ * from `lafka-theme/woocommerce/global/wrapper-start.php:114` (themed), plus
+ * WC core's own from `archive-product.php`. Suppress WC core's only on the
+ * shop archive so lafka's styled <h1> is the single canonical heading.
+ *
+ * Only `is_shop()` is gated — product detail pages are unaffected.
+ */
+add_filter( 'woocommerce_show_page_title', function ( $show ) {
+	if ( function_exists( 'is_shop' ) && is_shop() ) {
+		return false;
+	}
+	return $show;
+} );
