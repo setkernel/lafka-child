@@ -1,0 +1,1133 @@
+/**
+ * Editorial Design System — Lafka
+ *
+ * P6-UX-1 + P6-UX-4 W3-T8: Self-contained stylesheet for the "Editorial Home"
+ * and "Editorial Contact" alternate page templates.
+ *
+ * Conditionally enqueued ONLY when one of those templates is active —
+ * zero performance impact on the rest of the site.
+ *
+ * Font: Fraunces (variable serif, self-hosted) + Rubik (already self-hosted in lafka-theme).
+ * Tokens and layout translated from the W3-T8 design mockup.
+ */
+
+/* ============================================================
+   SELF-HOSTED FRAUNCES — @font-face
+   Paths are relative to this CSS file: ../assets/fonts/fraunces/
+   ============================================================ */
+
+@font-face {
+    font-family: 'Fraunces';
+    font-weight: 400;
+    font-style: normal;
+    font-display: optional;
+    src: url('../assets/fonts/fraunces/Fraunces-400.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Fraunces';
+    font-weight: 400;
+    font-style: italic;
+    font-display: optional;
+    src: url('../assets/fonts/fraunces/Fraunces-400italic.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Fraunces';
+    font-weight: 600;
+    font-style: normal;
+    font-display: optional;
+    src: url('../assets/fonts/fraunces/Fraunces-600.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Fraunces';
+    font-weight: 600;
+    font-style: italic;
+    font-display: optional;
+    src: url('../assets/fonts/fraunces/Fraunces-600italic.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Fraunces';
+    font-weight: 800;
+    font-style: normal;
+    font-display: optional;
+    src: url('../assets/fonts/fraunces/Fraunces-800.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Fraunces';
+    font-weight: 800;
+    font-style: italic;
+    font-display: optional;
+    src: url('../assets/fonts/fraunces/Fraunces-800italic.woff2') format('woff2');
+}
+
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+
+.lafka-editorial-home,
+.lafka-editorial-contact {
+    --paper:        #FAF6F0;
+    --paper-deep:   #F1EBE0;
+    --ink:          #1A1A1A;
+    --ink-soft:     #2A2A2A;
+    --gray:         #5E5E5E;
+    --gray-soft:    #8A8074;
+    --brand:        #E4584B;
+    --brand-deep:   #C93827;
+    --gold:         #FFD166;
+    --green:        #2D5A3D;
+    --shadow-1:     0 1px 2px rgba(26,26,26,0.04), 0 4px 16px rgba(26,26,26,0.06);
+    --shadow-2:     0 4px 12px rgba(26,26,26,0.08), 0 16px 48px rgba(26,26,26,0.12);
+    --grain:        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+/* ============================================================
+   MAIN WRAPPER — base styles
+   ============================================================ */
+
+.lafka-editorial-home,
+.lafka-editorial-contact {
+    font-family: 'Rubik', system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.5;
+    overflow-x: hidden;
+    background-image: var(--grain);
+    background-blend-mode: multiply;
+    box-sizing: border-box;
+}
+
+.lafka-editorial-home *,
+.lafka-editorial-home *::before,
+.lafka-editorial-home *::after,
+.lafka-editorial-contact *,
+.lafka-editorial-contact *::before,
+.lafka-editorial-contact *::after {
+    box-sizing: border-box;
+}
+
+.lafka-editorial-home ::selection,
+.lafka-editorial-contact ::selection {
+    background: var(--brand);
+    color: var(--paper);
+}
+
+.lafka-editorial-home a,
+.lafka-editorial-contact a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.lafka-editorial-home img,
+.lafka-editorial-contact img {
+    max-width: 100%;
+    display: block;
+}
+
+/* ============================================================
+   UTILITY BAR
+   ============================================================ */
+
+.lafka-editorial-home .editorial-utility,
+.lafka-editorial-contact .editorial-utility {
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.75rem;
+    letter-spacing: 0.03em;
+    padding: 0.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.lafka-editorial-home .editorial-utility .utility-open,
+.lafka-editorial-contact .editorial-utility .utility-open {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--gold);
+}
+
+.lafka-editorial-home .editorial-utility .utility-open::before,
+.lafka-editorial-contact .editorial-utility .utility-open::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #5BCB72;
+    box-shadow: 0 0 8px #5BCB72;
+    animation: lafka-ed-pulse 2s infinite;
+}
+
+@keyframes lafka-ed-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.5; }
+}
+
+.lafka-editorial-home .editorial-utility .utility-right,
+.lafka-editorial-contact .editorial-utility .utility-right {
+    display: flex;
+    gap: 1.5rem;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+.lafka-editorial-home .hero {
+    position: relative;
+    min-height: 92vh;
+    overflow: hidden;
+    display: grid;
+    align-items: end;
+    padding: 4rem 2rem 5rem;
+}
+
+.lafka-editorial-home .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center 40%;
+    z-index: 0;
+    animation: lafka-ed-ken-burns 30s ease-in-out infinite alternate;
+}
+
+@keyframes lafka-ed-ken-burns {
+    0%   { transform: scale(1) translateY(0); }
+    100% { transform: scale(1.05) translateY(-1%); }
+}
+
+.lafka-editorial-home .hero-content {
+    color: var(--paper);
+    max-width: 1280px;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.lafka-editorial-home .hero-eyebrow {
+    font-size: 0.8rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    margin-bottom: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    opacity: 0;
+    animation: lafka-ed-fade-up 1s 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.lafka-editorial-home .hero-eyebrow::before {
+    content: '';
+    width: 36px;
+    height: 1px;
+    background: var(--gold);
+}
+
+.lafka-editorial-home .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: clamp(2.5rem, 7vw, 6.5rem);
+    line-height: 0.95;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    max-width: 18ch;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: lafka-ed-fade-up 1s 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.lafka-editorial-home .hero h1 .accent {
+    font-style: normal;
+    color: var(--gold);
+}
+
+.lafka-editorial-home .hero-sub {
+    font-size: 1.15rem;
+    max-width: 50ch;
+    line-height: 1.5;
+    margin-bottom: 2.25rem;
+    opacity: 0;
+    color: rgba(250,246,240,0.92);
+    animation: lafka-ed-fade-up 1s 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.lafka-editorial-home .hero-cta-row {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: lafka-ed-fade-up 1s 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes lafka-ed-fade-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   BUTTONS (shared)
+   ============================================================ */
+
+.lafka-editorial-home .btn,
+.lafka-editorial-contact .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 1.6rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    border-radius: 2px;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+}
+
+.lafka-editorial-home .btn-primary,
+.lafka-editorial-contact .btn-primary {
+    background: var(--brand);
+    color: var(--paper);
+    box-shadow: 0 4px 0 rgba(0,0,0,0.15);
+}
+
+.lafka-editorial-home .btn-primary:hover,
+.lafka-editorial-contact .btn-primary:hover {
+    background: var(--brand-deep);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+}
+
+.lafka-editorial-home .btn-secondary {
+    background: transparent;
+    color: var(--paper);
+    border-color: rgba(250,246,240,0.35);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+
+.lafka-editorial-home .btn-secondary:hover {
+    background: var(--paper);
+    color: var(--ink);
+    border-color: var(--paper);
+}
+
+.lafka-editorial-home .btn-text {
+    color: var(--paper);
+    padding: 1rem 0;
+    border: none;
+    border-bottom: 1.5px solid rgba(250,246,240,0.4);
+    border-radius: 0;
+    background: transparent;
+}
+
+.lafka-editorial-home .btn-text:hover {
+    border-color: var(--paper);
+}
+
+.lafka-editorial-home .btn-text .arrow,
+.lafka-editorial-contact .btn-text .arrow {
+    transition: transform 0.2s;
+}
+
+.lafka-editorial-home .btn-text:hover .arrow,
+.lafka-editorial-contact .btn-text:hover .arrow {
+    transform: translateX(4px);
+}
+
+/* ============================================================
+   SOCIAL PROOF STRIP
+   ============================================================ */
+
+.lafka-editorial-home .social-proof {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1.75rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    text-align: center;
+    border-bottom: 1px solid rgba(250,246,240,0.08);
+}
+
+.lafka-editorial-home .social-proof .stars {
+    font-size: 1.4rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+}
+
+.lafka-editorial-home .social-proof .quote {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    color: rgba(250,246,240,0.92);
+    font-weight: 400;
+}
+
+.lafka-editorial-home .social-proof .stats {
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray-soft);
+}
+
+/* ============================================================
+   SECTION (shared base)
+   ============================================================ */
+
+.lafka-editorial-home section,
+.lafka-editorial-contact section {
+    padding: 7rem 2rem;
+    position: relative;
+}
+
+.lafka-editorial-home .section-head,
+.lafka-editorial-contact .section-head {
+    max-width: 1280px;
+    margin: 0 auto 4rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 3rem;
+    align-items: end;
+}
+
+.lafka-editorial-home .section-head .label,
+.lafka-editorial-contact .section-head .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--brand);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.lafka-editorial-home .section-head h2,
+.lafka-editorial-contact .section-head h2 {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 1;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.lafka-editorial-home .section-head h2 .roman {
+    font-style: normal;
+}
+
+.lafka-editorial-home .section-head .lede,
+.lafka-editorial-contact .section-head .lede {
+    color: var(--gray);
+    font-size: 1.05rem;
+    max-width: 38ch;
+    line-height: 1.5;
+    align-self: end;
+    text-align: right;
+    border-left: 1px solid rgba(26,26,26,0.15);
+    padding-left: 2rem;
+}
+
+/* ============================================================
+   CATEGORY CARDS
+   ============================================================ */
+
+.lafka-editorial-home .cards-wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+}
+
+.lafka-editorial-home .card {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: var(--ink);
+    cursor: pointer;
+    display: block;
+    text-decoration: none;
+}
+
+.lafka-editorial-home .card .photo {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lafka-editorial-home .card:hover .photo {
+    transform: scale(1.06);
+}
+
+.lafka-editorial-home .card .photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(26,26,26,0) 50%, rgba(26,26,26,0.85) 100%);
+}
+
+.lafka-editorial-home .card .content {
+    position: absolute;
+    inset: auto 1.5rem 1.5rem 1.5rem;
+    color: var(--paper);
+    z-index: 1;
+}
+
+.lafka-editorial-home .card .name {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.6rem;
+    font-weight: 600;
+    line-height: 1;
+    margin-bottom: 0.4rem;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lafka-editorial-home .card:hover .name {
+    transform: translateY(-2px);
+}
+
+.lafka-editorial-home .card .meta {
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.lafka-editorial-home .card .meta::after {
+    content: '\2192';
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lafka-editorial-home .card:hover .meta::after {
+    transform: translateX(4px);
+}
+
+.lafka-editorial-home .card.spotlight {
+    grid-column: span 2;
+    grid-row: span 2;
+}
+
+/* ============================================================
+   FEATURED PRODUCTS (dark section)
+   ============================================================ */
+
+.lafka-editorial-home .featured-section {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 7rem 2rem;
+}
+
+.lafka-editorial-home .featured-section .section-head h2 {
+    color: var(--paper);
+}
+
+.lafka-editorial-home .featured-section .section-head .label {
+    color: var(--gold);
+}
+
+.lafka-editorial-home .featured-section .section-head .lede {
+    color: rgba(250,246,240,0.7);
+    border-color: rgba(250,246,240,0.15);
+}
+
+.lafka-editorial-home .products-grid {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.lafka-editorial-home .product-card {
+    cursor: pointer;
+    position: relative;
+}
+
+.lafka-editorial-home .product-card .product-photo {
+    aspect-ratio: 4 / 3;
+    background-size: cover;
+    background-position: center;
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.lafka-editorial-home .product-card .product-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lafka-editorial-home .product-card:hover .product-photo img {
+    transform: scale(1.04);
+}
+
+.lafka-editorial-home .product-card .product-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: var(--gold);
+    color: var(--ink);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.4rem 0.7rem;
+    border-radius: 2px;
+}
+
+.lafka-editorial-home .product-card h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    font-style: italic;
+    font-weight: 600;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+    color: var(--paper);
+}
+
+.lafka-editorial-home .product-card .product-desc {
+    font-size: 0.85rem;
+    color: rgba(250,246,240,0.65);
+    margin-bottom: 1rem;
+    line-height: 1.4;
+    height: 2.4em;
+    overflow: hidden;
+}
+
+.lafka-editorial-home .product-card .price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(250,246,240,0.12);
+}
+
+.lafka-editorial-home .product-card .product-price {
+    font-family: 'Fraunces', serif;
+    font-size: 1.35rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--paper);
+}
+
+/* ============================================================
+   STORY SECTION
+   ============================================================ */
+
+.lafka-editorial-home .story-section {
+    background: var(--paper-deep);
+    padding: 8rem 2rem;
+}
+
+.lafka-editorial-home .story-grid {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 5rem;
+    align-items: center;
+}
+
+.lafka-editorial-home .story-photo {
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    position: relative;
+    box-shadow: var(--shadow-2);
+}
+
+.lafka-editorial-home .story-photo::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 1px solid var(--brand);
+    top: 1.5rem;
+    left: 1.5rem;
+    z-index: -1;
+}
+
+.lafka-editorial-home .story-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.lafka-editorial-home .story-text .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--brand);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.lafka-editorial-home .story-text h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.75rem;
+}
+
+.lafka-editorial-home .story-text h2 em {
+    font-style: italic;
+    color: var(--brand);
+}
+
+.lafka-editorial-home .story-text p {
+    color: var(--gray);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+}
+
+.lafka-editorial-home .story-text .pullquote {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.4rem;
+    line-height: 1.4;
+    color: var(--ink);
+    border-left: 2px solid var(--brand);
+    padding: 0.5rem 0 0.5rem 1.5rem;
+    margin: 2rem 0;
+}
+
+/* ============================================================
+   VISIT / MAP SECTION
+   ============================================================ */
+
+.lafka-editorial-home .visit-section {
+    padding: 7rem 2rem;
+}
+
+.lafka-editorial-home .visit-grid {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 3rem;
+}
+
+.lafka-editorial-home .map-frame {
+    aspect-ratio: 4 / 3;
+    background: var(--paper-deep);
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-1);
+}
+
+.lafka-editorial-home .map-frame iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+}
+
+.lafka-editorial-home .visit-info .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--brand);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.lafka-editorial-home .visit-info h2 {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+}
+
+.lafka-editorial-home .visit-block {
+    margin-bottom: 2rem;
+}
+
+.lafka-editorial-home .visit-block .small-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+.lafka-editorial-home .visit-block .value {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    color: var(--ink);
+}
+
+.lafka-editorial-home .visit-block .value a {
+    border-bottom: 1px solid var(--brand);
+    transition: color 0.2s;
+}
+
+.lafka-editorial-home .visit-block .value a:hover {
+    color: var(--brand);
+}
+
+.lafka-editorial-home .hours-table {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1.5rem;
+    font-size: 0.95rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.lafka-editorial-home .hours-table .day {
+    color: var(--gray);
+}
+
+.lafka-editorial-home .hours-table .time {
+    font-weight: 500;
+}
+
+.lafka-editorial-home .hours-table .today {
+    color: var(--brand);
+    font-weight: 700;
+}
+
+.lafka-editorial-home .visit-cta {
+    margin-top: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1rem 1.5rem;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+}
+
+.lafka-editorial-home .visit-cta:hover {
+    background: var(--brand);
+    transform: translateY(-2px);
+}
+
+/* ============================================================
+   NEWSLETTER SECTION
+   ============================================================ */
+
+.lafka-editorial-home .newsletter-section {
+    background: var(--brand);
+    color: var(--paper);
+    padding: 5rem 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.lafka-editorial-home .newsletter-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--grain);
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.lafka-editorial-home .newsletter-grid {
+    max-width: 1080px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    position: relative;
+}
+
+.lafka-editorial-home .newsletter-section h2 {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+    color: var(--paper);
+}
+
+.lafka-editorial-home .newsletter-section p {
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+.lafka-editorial-home .newsletter-form-wrap {
+    /* operator-provided form embed wrapper */
+}
+
+/* ============================================================
+   CONTACT TEMPLATE — HEAD
+   ============================================================ */
+
+.lafka-editorial-contact .contact-head {
+    background: var(--paper-deep);
+    padding: 6rem 2rem 4rem;
+    border-bottom: 1px solid rgba(26,26,26,0.08);
+}
+
+.lafka-editorial-contact .contact-head-inner {
+    max-width: 860px;
+    margin: 0 auto;
+}
+
+.lafka-editorial-contact .contact-head h1 {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 600;
+    line-height: 0.95;
+    letter-spacing: -0.025em;
+    margin-bottom: 1.25rem;
+    color: var(--ink);
+}
+
+.lafka-editorial-contact .contact-intro {
+    font-size: 1.15rem;
+    color: var(--gray);
+    max-width: 54ch;
+    line-height: 1.6;
+}
+
+/* ============================================================
+   CONTACT TEMPLATE — GRID (NAP | Map | Form)
+   ============================================================ */
+
+.lafka-editorial-contact .contact-grid {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1.3fr 1fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+/* NAP column */
+.lafka-editorial-contact .contact-nap h2 {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 1.75rem;
+    color: var(--ink);
+}
+
+.lafka-editorial-contact .contact-nap .contact-block {
+    margin-bottom: 1.75rem;
+}
+
+.lafka-editorial-contact .contact-nap .contact-block .block-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+.lafka-editorial-contact .contact-nap .contact-block .block-value {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--ink);
+}
+
+.lafka-editorial-contact .contact-nap .contact-block .block-value a {
+    border-bottom: 1px solid var(--brand);
+    transition: color 0.2s;
+}
+
+.lafka-editorial-contact .contact-nap .contact-block .block-value a:hover {
+    color: var(--brand);
+}
+
+.lafka-editorial-contact .contact-hours {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.4rem 1.25rem;
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.lafka-editorial-contact .contact-hours .day { color: var(--gray); }
+.lafka-editorial-contact .contact-hours .time { font-weight: 500; }
+.lafka-editorial-contact .contact-hours .today { color: var(--brand); font-weight: 700; }
+
+/* Map column */
+.lafka-editorial-contact .contact-map-frame {
+    aspect-ratio: 3 / 4;
+    background: var(--paper-deep);
+    overflow: hidden;
+    box-shadow: var(--shadow-1);
+    position: relative;
+}
+
+.lafka-editorial-contact .contact-map-frame iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+}
+
+/* Form column */
+.lafka-editorial-contact .contact-form h2 {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--ink);
+}
+
+.lafka-editorial-contact .contact-form p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--gray);
+}
+
+.lafka-editorial-contact .contact-form a {
+    color: var(--brand);
+    border-bottom: 1px solid var(--brand);
+}
+
+/* ============================================================
+   MOBILE — ≤ 900px
+   ============================================================ */
+
+@media (max-width: 900px) {
+    .lafka-editorial-home .editorial-utility,
+    .lafka-editorial-contact .editorial-utility {
+        padding: 0.5rem 1rem;
+        flex-direction: column;
+        gap: 0.25rem;
+        text-align: center;
+    }
+
+    .lafka-editorial-home .editorial-utility .utility-right,
+    .lafka-editorial-contact .editorial-utility .utility-right {
+        gap: 0.75rem;
+    }
+
+    .lafka-editorial-home section,
+    .lafka-editorial-contact section {
+        padding: 4rem 1rem;
+    }
+
+    .lafka-editorial-home .section-head,
+    .lafka-editorial-contact .section-head {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .lafka-editorial-home .section-head .lede,
+    .lafka-editorial-contact .section-head .lede {
+        text-align: left;
+        border-left: none;
+        border-top: 1px solid rgba(26,26,26,0.15);
+        padding: 1.5rem 0 0;
+        max-width: none;
+    }
+
+    .lafka-editorial-home .cards-wrap {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+
+    .lafka-editorial-home .card.spotlight {
+        grid-column: span 2;
+        grid-row: span 1;
+        aspect-ratio: 16 / 10;
+    }
+
+    .lafka-editorial-home .products-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+
+    .lafka-editorial-home .story-grid,
+    .lafka-editorial-home .visit-grid,
+    .lafka-editorial-home .newsletter-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+
+    .lafka-editorial-home .hero {
+        min-height: 80vh;
+        padding: 3rem 1rem;
+    }
+
+    .lafka-editorial-home .hero-cta-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .lafka-editorial-home .hero-cta-row .btn {
+        justify-content: center;
+    }
+
+    .lafka-editorial-home .social-proof {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 2rem 1rem;
+    }
+
+    .lafka-editorial-contact .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+        padding: 3rem 1rem;
+    }
+
+    .lafka-editorial-contact .contact-head {
+        padding: 4rem 1rem 2.5rem;
+    }
+
+    .lafka-editorial-contact .contact-map-frame {
+        aspect-ratio: 4 / 3;
+    }
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    .lafka-editorial-home *,
+    .lafka-editorial-home *::before,
+    .lafka-editorial-home *::after,
+    .lafka-editorial-contact *,
+    .lafka-editorial-contact *::before,
+    .lafka-editorial-contact *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

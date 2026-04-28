@@ -2,7 +2,7 @@
 Theme Name: Lafka Child
 Theme URI: https://github.com/setkernel/lafka-child
 Description: Child theme for the Lafka WooCommerce theme. Use this to customize Lafka without modifying the parent theme directly.
-Version: 5.6.0
+Version: 5.7.0
 Template: lafka
 Author: theAlThemist, Contributors
 Author URI: https://github.com/setkernel/lafka-child
@@ -24,6 +24,47 @@ Text Domain: lafka
  * without touching PHP.
  * ============================================================================
  */
+
+
+/* ----------------------------------------------------------------------------
+ * PERFORMANCE: CLS RESERVATIONS (P6-PERF-2)
+ * -------------------------------------------------------------------------- */
+
+/*
+ * P6-PERF-2: reserve carousel slot height before Owl Carousel mounts.
+ * The aspect-ratio is tuned to the common single-row carousel shape
+ * (1280×400 hero / 1280×500 product carousel). When Owl mounts and sets
+ * its own dimensions, this reservation is overridden by Owl's inline
+ * styles — but in the pre-mount window the layout doesn't shift.
+ *
+ * If a specific carousel needs a different ratio, override per-instance:
+ *   .lafka-owl-carousel.is-hero { aspect-ratio: 1280 / 400; }
+ *   .lafka-owl-carousel.is-product-grid { aspect-ratio: 1280 / 500; }
+ */
+.lafka-owl-carousel:not(.owl-loaded) {
+    aspect-ratio: 1280 / 500;
+    overflow: hidden;
+    contain: layout;
+}
+
+/* Also reserve the WPBakery vc_lafka_content_slider before Owl init */
+[id^="lafka_content_slider"]:not(.owl-loaded) {
+    aspect-ratio: 1280 / 600;
+    overflow: hidden;
+    contain: layout;
+}
+
+/* Revolution Slider — pre-reserve based on its data-slidertype attribute.
+   Revslider's HTML emits the intended height as data-* attrs but doesn't
+   apply it as CSS until JS runs. Use a generous default to prevent shift.
+   If specific Revslider modules have different heights, override via the
+   slider module ID (e.g. #rev_slider_5_1 { aspect-ratio: 16 / 5; }). */
+rs-module-wrap:not(.rs-loaded),
+.rev_slider_wrapper:not(.rev-loaded) {
+    aspect-ratio: 16 / 5;
+    overflow: hidden;
+    contain: layout;
+}
 
 
 /* ----------------------------------------------------------------------------
@@ -242,3 +283,63 @@ div.prod_hold .price_hold .price {
     }
 }
 */
+
+/* ----------------------------------------------------------------------------
+ * P6-UX-7: PRICE PRESENTATION CONSISTENCY (W3-T5, 2026-04-28)
+ * -------------------------------------------------------------------------- */
+
+/* Tabular digits keep prices vertically aligned inside product grids */
+.price,
+.woocommerce-Price-amount {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Strike-through (original price) — muted so it doesn't compete with sale price */
+.price del {
+    opacity: 0.6;
+    margin-right: 0.25em;
+}
+
+/* Highlighted (sale price) — no underline theatrics, colour from theme vars */
+.price ins {
+    text-decoration: none;
+}
+
+/* ----------------------------------------------------------------------------
+ * P6-UX-6: GROUPED MOBILE MENU (W3-T10, 2026-04-28)
+ * Active when Customizer setting lafka_mobile_menu_grouping = yes
+ * -------------------------------------------------------------------------- */
+
+.lafka-mobile-menu-group {
+    margin: 1.5rem 0;
+}
+
+.lafka-mobile-menu-group-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #5e5e5e;
+    font-weight: 600;
+    padding: 0 1.5rem;
+    margin: 1.25rem 0 0.5rem;
+}
+
+.lafka-mobile-menu-group-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.lafka-mobile-menu-group-items > li > a {
+    display: block;
+    padding: 0.85rem 1.5rem;
+    color: #1a1a1a;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    font-weight: 500;
+}
+
+.lafka-mobile-menu-group-items > li > a:hover {
+    background: #f8f4ee;
+    color: #e4584b;
+}
