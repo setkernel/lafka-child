@@ -465,3 +465,32 @@ function bogo_50_dismissible_banner() {
 	</script>
 	<?php
 }
+
+/**
+ * P6-PERF-1: Per-page LCP image preload + fetchpriority on the matching image.
+ *
+ * Adjust the hero URL when the homepage hero changes (e.g. after the Week 3
+ * homepage redesign). The attachment-id-keyed filter is a no-op until the
+ * `lafka_homepage_hero_attachment_id` WP option is set by the operator.
+ */
+add_filter( 'lafka_lcp_image_url', function ( $url ) {
+	if ( is_front_page() ) {
+		// TODO P6-PERF-1: confirm with operator that this is the correct hero URL
+		// after the Week 3 homepage redesign. Until then, this preloads the
+		// existing top promo image.
+		return content_url( '/uploads/2026/01/Untitled-design-11.png' );
+	}
+	return $url;
+} );
+
+add_filter( 'wp_get_attachment_image_attributes', function ( $attr, $attachment ) {
+	if ( ! is_front_page() ) {
+		return $attr;
+	}
+	$hero_attachment_id = (int) get_option( 'lafka_homepage_hero_attachment_id', 0 );
+	if ( $hero_attachment_id && $hero_attachment_id === (int) ( is_object( $attachment ) ? $attachment->ID : 0 ) ) {
+		$attr['fetchpriority'] = 'high';
+		$attr['loading']       = 'eager';
+	}
+	return $attr;
+}, 10, 2 );
