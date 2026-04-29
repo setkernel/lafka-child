@@ -198,3 +198,29 @@ body { padding-top: var(--lafka-pdp-bar-h); }
 .lafka-cart-drawer__continue { flex: 1; background: #fff; border: 1.5px solid var(--lafka-pdp-border); border-radius: var(--lafka-pdp-radius-chip); padding: 12px; cursor: pointer; font: inherit; }
 .lafka-cart-drawer__checkout { flex: 1; background: var(--lafka-pdp-accent); color: #fff; border: none; border-radius: var(--lafka-pdp-radius-chip); padding: 12px; text-align: center; font-weight: 600; text-decoration: none; }
 .lafka-cart-drawer__checkout:hover { background: var(--lafka-pdp-accent-dark); color: #fff; }
+
+/* === Last-order card (W4-T16) === */
+.lafka-pdp-last-order {
+  background: var(--lafka-pdp-bg-soft);
+  border: 1px solid var(--lafka-pdp-border);
+  border-radius: var(--lafka-pdp-radius);
+  padding: 12px 14px;
+  margin: 14px 0;
+}
+.lafka-pdp-last-order__heading {
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--lafka-pdp-muted);
+}
+.lafka-pdp-last-order__items { list-style: none; padding: 0; margin: 6px 0 10px; font-size: 13px; }
+.lafka-pdp-last-order__items li { padding: 2px 0; }
+.lafka-pdp-last-order__reorder {
+  background: #fff;
+  border: 1.5px solid var(--lafka-pdp-accent);
+  color: var(--lafka-pdp-accent);
+  padding: 6px 14px;
+  border-radius: var(--lafka-pdp-radius-chip);
+  font: inherit; font-weight: 600;
+  cursor: pointer;
+}
+.lafka-pdp-last-order__reorder:hover { background: var(--lafka-pdp-accent); color: #fff; }
