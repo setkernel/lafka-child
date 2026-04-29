@@ -74,9 +74,10 @@ foreach ( $variations as $v ) {
             </div>
         </fieldset>
     <?php endforeach; ?>
-
-    <?php
-    // Lafka addons (Pizza Toppings) hook into woocommerce_before_add_to_cart_button.
-    do_action( 'woocommerce_before_add_to_cart_button' );
-    ?>
 </div>
+<?php
+// Note: standard WC variations-form hooks (woocommerce_before_variations_form,
+// _before_single_variation, _single_variation, _before_add_to_cart_button, etc.)
+// are fired by pdp-summary.php in the correct WC-conformant order.
+// Don't add do_action() calls here — they'd fire at the wrong place in the
+// form structure and break addon-plugin reposition logic.
