@@ -224,3 +224,31 @@ body { padding-top: var(--lafka-pdp-bar-h); }
   cursor: pointer;
 }
 .lafka-pdp-last-order__reorder:hover { background: var(--lafka-pdp-accent); color: #fff; }
+
+/* === Upsell row "Make it a meal" (W4-T17) === */
+.lafka-pdp-upsell { margin: 24px 0; }
+.lafka-pdp-upsell__heading { font-size: 14px; font-weight: 700; margin: 0 0 12px; }
+.lafka-pdp-upsell__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+@media (max-width: 720px) { .lafka-pdp-upsell__grid { grid-template-columns: repeat(2, 1fr); } }
+.lafka-pdp-upsell__card {
+  background: var(--lafka-pdp-bg-soft);
+  border-radius: var(--lafka-pdp-radius);
+  padding: 10px; text-align: center;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.lafka-pdp-upsell__link { color: inherit; text-decoration: none; }
+.lafka-pdp-upsell__link img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 4px; }
+.lafka-pdp-upsell__name { display: block; font-size: 12px; font-weight: 500; margin-top: 4px; }
+.lafka-pdp-upsell__price { display: block; font-size: 11px; color: var(--lafka-pdp-muted); }
+.lafka-pdp-upsell__add {
+  background: #fff;
+  border: 1.5px solid var(--lafka-pdp-accent);
+  color: var(--lafka-pdp-accent);
+  padding: 6px;
+  border-radius: var(--lafka-pdp-radius-chip);
+  font: inherit; font-weight: 600;
+  cursor: pointer;
+  margin-top: auto;
+}
+.lafka-pdp-upsell__add:hover { background: var(--lafka-pdp-accent); color: #fff; }
+.lafka-pdp-upsell__add:disabled { opacity: .6; cursor: wait; }
