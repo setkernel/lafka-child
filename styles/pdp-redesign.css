@@ -320,3 +320,32 @@ body { padding-top: var(--lafka-pdp-bar-h); }
   .lafka-pdp-mobile-cta__btn:disabled { background: #ccc; }
   body.single-product { padding-bottom: var(--lafka-pdp-cta-h-mobile); }
 }
+
+/* === PDP tabs (W4-T19) === */
+.lafka-pdp-tabs {
+  margin: 32px 0;
+  background: #fff;
+  border-radius: var(--lafka-pdp-radius);
+  padding: 20px;
+  box-shadow: var(--lafka-pdp-shadow-card);
+}
+.lafka-pdp-tabs__buttons {
+  display: flex; gap: 24px;
+  border-bottom: 1px solid var(--lafka-pdp-border);
+  padding-bottom: 8px; margin-bottom: 16px;
+}
+.lafka-pdp-tabs__buttons [role="tab"] {
+  background: none; border: none;
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--lafka-pdp-muted);
+  padding: 0 0 8px; margin-bottom: -9px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+.lafka-pdp-tabs__buttons [aria-selected="true"] {
+  color: var(--lafka-pdp-accent);
+  border-bottom-color: var(--lafka-pdp-accent);
+}
+.lafka-pdp-tabs__panel { font-size: 13px; line-height: 1.6; color: var(--lafka-pdp-text); }
+.lafka-pdp-tabs__panel[hidden] { display: none; }
