@@ -30,7 +30,12 @@ foreach ( $variations as $v ) {
 <div class="lafka-pdp-pickers" data-prices='<?php echo esc_attr( wp_json_encode( $prices_by_attrs ) ); ?>'>
     <?php foreach ( $attributes as $attr_name => $options ): ?>
         <?php
-        $taxonomy = wc_attribute_taxonomy_name( str_replace( 'attribute_', '', $attr_name ) );
+        // $attr_name from get_variation_attributes() is the form-input name
+        // (e.g. "attribute_pa_size"). Strip the 'attribute_' prefix to get
+        // the actual taxonomy slug ("pa_size"). Do NOT pass through
+        // wc_attribute_taxonomy_name() — that function unconditionally adds
+        // a 'pa_' prefix, producing "pa_pa_size" which doesn't exist.
+        $taxonomy = str_replace( 'attribute_', '', $attr_name );
         $label    = wc_attribute_label( $attr_name, $product );
         ?>
         <fieldset class="lafka-pdp-picker" data-attribute="<?php echo esc_attr( $attr_name ); ?>" data-required="true">
