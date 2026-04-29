@@ -548,3 +548,102 @@ function lafka_editorial_assets_enqueue() {
 		wp_get_theme()->get( 'Version' )
 	);
 }
+
+/**
+ * P6-PDP (W4-T21, 2026-04-29): Enqueue PDP redesign CSS+JS conditionally.
+ *
+ * CSS + always-needed JS load on every page (the order-method bar + cart
+ * drawer can fire from the header on any page). PDP-only JS (pickers,
+ * upsell modal) loads only when is_product().
+ */
+add_action( 'wp_enqueue_scripts', function () {
+    if ( ! function_exists( 'lafka_pdp_redesign_enabled' ) || ! lafka_pdp_redesign_enabled() ) {
+        return;
+    }
+    if ( ! function_exists( 'is_product' ) ) {
+        return;
+    }
+
+    $stylesheet_uri = get_stylesheet_directory_uri();
+    $base_dir       = get_stylesheet_directory();
+    $version_for    = static function ( string $rel ) use ( $base_dir ): string {
+        $f = $base_dir . '/' . ltrim( $rel, '/' );
+        return file_exists( $f ) ? (string) filemtime( $f ) : (string) time();
+    };
+
+    wp_enqueue_style(
+        'lafka-pdp-redesign',
+        $stylesheet_uri . '/styles/pdp-redesign.css',
+        array(),
+        $version_for( 'styles/pdp-redesign.css' )
+    );
+
+    wp_enqueue_script(
+        'lafka-order-method',
+        $stylesheet_uri . '/js/order-method.js',
+        array(),
+        $version_for( 'js/order-method.js' ),
+        array( 'in_footer' => true, 'strategy' => 'defer' )
+    );
+
+    wp_enqueue_script(
+        'lafka-cart-drawer',
+        $stylesheet_uri . '/js/cart-drawer.js',
+        array( 'jquery' ),
+        $version_for( 'js/cart-drawer.js' ),
+        array( 'in_footer' => true, 'strategy' => 'defer' )
+    );
+
+    if ( is_product() ) {
+        wp_enqueue_script(
+            'lafka-pdp-pickers',
+            $stylesheet_uri . '/js/pdp-pickers.js',
+            array(),
+            $version_for( 'js/pdp-pickers.js' ),
+            array( 'in_footer' => true, 'strategy' => 'defer' )
+        );
+        wp_enqueue_script(
+            'lafka-upsell-modal',
+            $stylesheet_uri . '/js/upsell-modal.js',
+            array( 'jquery' ),
+            $version_for( 'js/upsell-modal.js' ),
+            array( 'in_footer' => true, 'strategy' => 'defer' )
+        );
+    }
+}, 11 );
+
+/**
+ * P6-PDP (W4-T21, 2026-04-29): Hook the always-sticky order-method bar.
+ */
+add_action( 'wp_body_open', function () {
+    if ( ! function_exists( 'lafka_pdp_redesign_enabled' ) || ! lafka_pdp_redesign_enabled() ) {
+        return;
+    }
+    $partial = get_stylesheet_directory() . '/partials/order-method-bar.php';
+    if ( file_exists( $partial ) ) {
+        include $partial;
+    }
+}, 5 );
+
+/**
+ * P6-PDP (W4-T21, 2026-04-29): Cart drawer to wp_footer.
+ */
+add_action( 'wp_footer', function () {
+    if ( ! function_exists( 'lafka_pdp_redesign_enabled' ) || ! lafka_pdp_redesign_enabled() ) {
+        return;
+    }
+    $partial = get_stylesheet_directory() . '/partials/cart-drawer.php';
+    if ( file_exists( $partial ) ) {
+        include $partial;
+    }
+}, 5 );
+
+/**
+ * P6-PDP (W4-T21, 2026-04-29): body_class signal for redesign-disabled state.
+ */
+add_filter( 'body_class', function ( $classes ) {
+    if ( function_exists( 'lafka_pdp_redesign_enabled' ) && ! lafka_pdp_redesign_enabled() ) {
+        $classes[] = 'lafka-pdp-disabled';
+    }
+    return $classes;
+} );
