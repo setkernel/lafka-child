@@ -2,7 +2,7 @@
 Theme Name: Lafka Child
 Theme URI: https://github.com/setkernel/lafka-child
 Description: Child theme for the Lafka WooCommerce theme. Use this to customize Lafka without modifying the parent theme directly. Includes editorial alternate page templates (selectable via Page Attributes), CLS reservations, and image-dimension auto-injection.
-Version: 5.7.2
+Version: 5.7.3
 Template: lafka
 Author: theAlThemist, Contributors
 Author URI: https://github.com/setkernel/lafka-child
@@ -67,6 +67,49 @@ rs-module-wrap:not(.rs-loaded),
     aspect-ratio: 16 / 5;
     overflow: hidden;
     contain: layout;
+}
+
+/* P6-PERF-2 (v5.7.3): WPBakery vc_single_image — modern browsers infer
+   aspect-ratio from the IMG's width/height attributes (which WPBakery always
+   emits on vc_single_image-img), BUT that inference only sticks when no CSS
+   rule sets a non-auto height first. Some parent-theme/responsive rules force
+   height to a percentage which kills the inference. Re-assert height: auto on
+   the IMG so the browser-computed aspect-ratio reservation wins.
+
+   Also contain layout on the wrapper so any pre-load size fluctuation inside
+   the image element doesn't ripple up into the surrounding row. line-height: 0
+   prevents baseline-induced sub-pixel height jumps when the IMG resolves. */
+img.vc_single_image-img {
+    height: auto;
+    max-width: 100%;
+}
+.wpb_single_image .vc_single_image-wrapper {
+    contain: layout;
+    line-height: 0;
+}
+
+/* P6-PERF-2 (v5.7.3): operator opt-in hero-row reservation. WPBakery rows
+   with background images (.vc_row.vc_row-has-fill) cannot have aspect-ratio
+   inferred — the bg image URL is a runtime-resolved CSS property, not an IMG
+   attribute. Add this class to your homepage's hero row in WPBakery's "Row
+   settings → Extra class name" so the row reserves space before the bg
+   loads. The default 16/9 covers most full-width hero shapes; override per
+   row by combining with .lafka-hero-row--16x5, --4x3, etc. as needed.
+
+   Apply to: WPBakery rows where the background image is the LCP candidate
+   (verified via Lighthouse → "LCP element"). */
+.vc_row.vc_row-has-fill.lafka-hero-row {
+    aspect-ratio: 16 / 9;
+    contain: layout;
+}
+.vc_row.vc_row-has-fill.lafka-hero-row.lafka-hero-row--16x5 {
+    aspect-ratio: 16 / 5;
+}
+.vc_row.vc_row-has-fill.lafka-hero-row.lafka-hero-row--4x3 {
+    aspect-ratio: 4 / 3;
+}
+.vc_row.vc_row-has-fill.lafka-hero-row.lafka-hero-row--1x1 {
+    aspect-ratio: 1 / 1;
 }
 
 
