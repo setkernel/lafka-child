@@ -58,122 +58,10 @@ function lafka_child_enqueue_styles() {
 }
 
 /*
- * ============================================================================
- * CUSTOMIZATION EXAMPLES
- * ============================================================================
- *
- * Below are common customizations for a Lafka child theme. Each example is
- * commented out and ready to use — just uncomment the block you need.
- *
- * Tip: the parent theme's options panel (Appearance > Theme Options) handles
- * most settings. Use these hooks when you need logic the options panel can't
- * provide, or when you want version-controlled overrides.
- * ============================================================================
+ * For common customization recipes (sidebars, related-products heading,
+ * pagination wrappers, widget areas, etc.), see examples/customizations.php.example.
+ * Copy the block you want into this functions.php to activate it.
  */
-// phpcs:disable Squiz.PHP.CommentedOutCode.Found -- examples are intentional documentation
-
-/*
- * 1. Force sidebar on/off for specific page types
- *    Filter: lafka_has_sidebar (used in page.php, single.php, archive.php, etc.)
- *    Return a sidebar slug or empty string to hide.
- */
-// add_filter( 'lafka_has_sidebar', 'lafka_child_sidebar_override' );
-// function lafka_child_sidebar_override( $sidebar ) {
-//     if ( is_product() ) {
-//         return ''; // hide sidebar on single products
-//     }
-//     return $sidebar;
-// }
-
-/*
- * 2. Add content before the add-to-cart button (e.g. allergen info, prep time)
- *    Filter: lafka_links_before_add_to_cart (in loop/add-to-cart.php)
- */
-// add_filter( 'lafka_links_before_add_to_cart', 'lafka_child_before_cart_link' );
-// function lafka_child_before_cart_link( $html ) {
-//     global $product;
-//     $prep = get_post_meta( $product->get_id(), '_prep_time', true );
-//     if ( $prep ) {
-//         $html .= '<span class="lafka-prep-time">' . esc_html( $prep ) . ' min</span>';
-//     }
-//     return $html;
-// }
-
-/*
- * 3. Change the number of products per page
- *    Filter: loop_shop_per_page (WooCommerce core)
- */
-// add_filter( 'loop_shop_per_page', 'lafka_child_products_per_page' );
-// function lafka_child_products_per_page( $cols ) {
-//     return 24;
-// }
-
-/*
- * 4. Customize the related products section heading
- *    Filter: woocommerce_product_related_products_heading (WooCommerce core)
- */
-// add_filter( 'woocommerce_product_related_products_heading', 'lafka_child_related_heading' );
-// function lafka_child_related_heading( $heading ) {
-//     return __( 'You might also like', 'lafka' );
-// }
-
-/*
- * 5. Override theme colors with CSS custom properties
- *    Action: wp_head — outputs a <style> block that overrides :root variables.
- *    See dynamic-css.php for the full list of --lafka-* variables.
- */
-/*
-add_action( 'wp_head', 'lafka_child_color_overrides', 100 );
-function lafka_child_color_overrides() {
-	?>
-	<style>
-		:root {
-			--lafka-accent-color: #e85d2a;
-			--lafka-button-color: #e85d2a;
-			--lafka-button-hover-color: #c44a1e;
-		}
-	</style>
-	<?php
-}
-*/
-
-/*
- * 6. Modify the pagination HTML output
- *    Filter: lafka_pagination (in functions.php lafka_pagination())
- */
-// add_filter( 'lafka_pagination', 'lafka_child_pagination' );
-// function lafka_child_pagination( $html ) {
-//     // Example: wrap pagination in an extra container
-//     return '<nav class="lafka-child-pagination" aria-label="Products">' . $html . '</nav>';
-// }
-
-/*
- * 7. Register an additional widget area (e.g. for a promotional banner)
- *    Action: widgets_init (WordPress core)
- */
-// add_action( 'widgets_init', 'lafka_child_widgets' );
-// function lafka_child_widgets() {
-//     register_sidebar( array(
-//         'name'          => __( 'Promo Banner', 'lafka' ),
-//         'id'            => 'lafka-child-promo',
-//         'before_widget' => '<div id="%1$s" class="widget lafka-promo-widget %2$s">',
-//         'after_widget'  => '</div>',
-//         'before_title'  => '<h3 class="widget-title">',
-//         'after_title'   => '</h3>',
-//     ) );
-// }
-
-/*
- * 8. Add a store-wide notice above the shop (e.g. holiday hours, delivery delay)
- *    Action: woocommerce_before_shop_loop (WooCommerce core)
- */
-// add_action( 'woocommerce_before_shop_loop', 'lafka_child_shop_notice', 5 );
-// function lafka_child_shop_notice() {
-//     echo '<div class="lafka-child-shop-notice">';
-//     echo esc_html__( 'Free delivery on orders over $30!', 'lafka' );
-//     echo '</div>';
-// }
-// phpcs:enable Squiz.PHP.CommentedOutCode.Found
 
 /**
  * ─── 9. Delivery Minimum ──────────────────────────────────────────────────────
@@ -472,18 +360,26 @@ function bogo_50_dismissible_banner() {
 /**
  * P6-PERF-1: Per-page LCP image preload + fetchpriority on the matching image.
  *
- * Adjust the hero URL when the homepage hero changes (e.g. after the Week 3
- * homepage redesign). The attachment-id-keyed filter is a no-op until the
- * `lafka_homepage_hero_attachment_id` WP option is set by the operator.
+ * Hero image URL comes from the Customizer setting `lafka_homepage_hero_image`
+ * (registered in lafka-plugin/incl/customizer/class-lafka-customizer-restaurant-info.php).
+ * Accepts either a full URL or a numeric attachment ID. When unset, no preload
+ * is emitted — keeps the OSS plugin free of any restaurant-specific media URL.
  */
 add_filter( 'lafka_lcp_image_url', function ( $url ) {
-	if ( is_front_page() ) {
-		// TODO P6-PERF-1: confirm with operator that this is the correct hero URL
-		// after the Week 3 homepage redesign. Until then, this preloads the
-		// existing top promo image.
-		return content_url( '/uploads/2026/01/Untitled-design-11.png' );
+	if ( ! is_front_page() ) {
+		return $url;
 	}
-	return $url;
+	$hero = get_theme_mod( 'lafka_homepage_hero_image', '' );
+	if ( '' === $hero || null === $hero ) {
+		return $url;
+	}
+	// Attachment ID stored as int/numeric string.
+	if ( is_numeric( $hero ) ) {
+		$resolved = wp_get_attachment_image_url( (int) $hero, 'full' );
+		return $resolved ? $resolved : $url;
+	}
+	// Full URL (image control's default storage mode).
+	return esc_url_raw( (string) $hero );
 } );
 
 add_filter( 'wp_get_attachment_image_attributes', function ( $attr, $attachment ) {
