@@ -30,15 +30,23 @@ foreach ( $variations as $v ) {
 <div class="lafka-pdp-pickers" data-prices='<?php echo esc_attr( wp_json_encode( $prices_by_attrs ) ); ?>'>
     <?php foreach ( $attributes as $attr_name => $options ): ?>
         <?php
-        // $attr_name from get_variation_attributes() is the form-input name
-        // (e.g. "attribute_pa_size"). Strip the 'attribute_' prefix to get
-        // the actual taxonomy slug ("pa_size"). Do NOT pass through
-        // wc_attribute_taxonomy_name() — that function unconditionally adds
-        // a 'pa_' prefix, producing "pa_pa_size" which doesn't exist.
-        $taxonomy = str_replace( 'attribute_', '', $attr_name );
-        $label    = wc_attribute_label( $attr_name, $product );
+        // $attr_name from get_variation_attributes() is the taxonomy slug
+        // (e.g. "pa_size") — no "attribute_" prefix. Use it directly as the
+        // taxonomy name for term-label lookups.
+        //
+        // The form-input `name` attribute, however, MUST be prefixed with
+        // "attribute_" so WC_Form_Handler::add_to_cart_handler_variable()
+        // can find $_REQUEST['attribute_pa_size'] when matching variations.
+        // Get this wrong and add-to-cart silently fails with variation_id=0.
+        //
+        // Per-variation $v['attributes'] keys (from get_available_variations)
+        // also use the "attribute_" prefix — that's why the price lookup
+        // below indexes with "attribute_$attr_name".
+        $taxonomy   = $attr_name;
+        $label      = wc_attribute_label( $attr_name, $product );
+        $field_name = 'attribute_' . $attr_name;
         ?>
-        <fieldset class="lafka-pdp-picker" data-attribute="<?php echo esc_attr( $attr_name ); ?>" data-required="true">
+        <fieldset class="lafka-pdp-picker" data-attribute="<?php echo esc_attr( $field_name ); ?>" data-required="true">
             <legend class="lafka-pdp-picker__label"><?php echo esc_html( $label ); ?></legend>
             <div class="lafka-pdp-picker__chips" role="radiogroup" aria-required="true">
                 <?php foreach ( $options as $opt ): ?>
@@ -47,14 +55,14 @@ foreach ( $variations as $v ) {
                     $opt_label  = $term ? $term->name : $opt;
                     $option_price = '';
                     foreach ( $variations as $v ) {
-                        if ( ( $v['attributes'][ $attr_name ] ?? '' ) === $opt ) {
+                        if ( ( $v['attributes'][ $field_name ] ?? '' ) === $opt ) {
                             $option_price = wc_price( $v['display_price'] );
                             break;
                         }
                     }
                     ?>
                     <label class="lafka-pdp-chip">
-                        <input type="radio" name="<?php echo esc_attr( $attr_name ); ?>" value="<?php echo esc_attr( $opt ); ?>">
+                        <input type="radio" name="<?php echo esc_attr( $field_name ); ?>" value="<?php echo esc_attr( $opt ); ?>">
                         <span class="lafka-pdp-chip__inner">
                             <span class="lafka-pdp-chip__name"><?php echo esc_html( $opt_label ); ?></span>
                             <?php if ( $option_price ): ?>
