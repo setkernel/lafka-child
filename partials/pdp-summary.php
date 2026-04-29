@@ -105,8 +105,27 @@ $form_action = apply_filters( 'woocommerce_add_to_cart_form_action', $product->g
                     <?php do_action( 'woocommerce_after_add_to_cart_button' ); ?>
                 </div>
 
-                <?php do_action( 'woocommerce_single_variation' ); ?>
-                <?php do_action( 'woocommerce_after_single_variation' ); ?>
+                <?php
+                // WC core hooks two callbacks to woocommerce_single_variation:
+                //   - priority 10: woocommerce_single_variation() — renders an
+                //     empty wrapper div we already have above.
+                //   - priority 20: woocommerce_single_variation_add_to_cart_button() —
+                //     renders ANOTHER quantity input, ANOTHER submit button, and
+                //     duplicate hidden inputs (add-to-cart, product_id, variation_id).
+                // The duplicate submit button isn't bound to our picker-state JS,
+                // so clicking it submits without our validation and WC errors out
+                // with "Please choose product options for X".
+                //
+                // We need woocommerce_single_variation to fire so the lafka-plugin
+                // addon system's repositioned display() callback runs (it's at
+                // priority 15, between WC's two defaults). Solution: remove WC's
+                // defaults before firing, fire the action, then leave the rest of
+                // the form in our control.
+                remove_action( 'woocommerce_single_variation', 'woocommerce_single_variation', 10 );
+                remove_action( 'woocommerce_single_variation', 'woocommerce_single_variation_add_to_cart_button', 20 );
+                do_action( 'woocommerce_single_variation' );
+                do_action( 'woocommerce_after_single_variation' );
+                ?>
             </div>
 
             <input type="hidden" name="add-to-cart" value="<?php echo absint( $product->get_id() ); ?>">
