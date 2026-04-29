@@ -1,14 +1,17 @@
 /*
 Theme Name: Lafka Child
 Theme URI: https://github.com/setkernel/lafka-child
-Description: Child theme for the Lafka WooCommerce theme. Use this to customize Lafka without modifying the parent theme directly.
-Version: 5.7.1
+Description: Child theme for the Lafka WooCommerce theme. Use this to customize Lafka without modifying the parent theme directly. Includes editorial alternate page templates (selectable via Page Attributes), CLS reservations, and image-dimension auto-injection.
+Version: 5.7.2
 Template: lafka
 Author: theAlThemist, Contributors
 Author URI: https://github.com/setkernel/lafka-child
 License: GNU General Public License v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: lafka
+Requires at least: 6.6
+Tested up to: 6.9
+Requires PHP: 8.1
 */
 
 /*
