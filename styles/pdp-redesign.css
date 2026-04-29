@@ -36,3 +36,70 @@
 body.lafka-pdp-disabled .lafka-pdp,
 body.lafka-pdp-disabled .lafka-cart-drawer,
 body.lafka-pdp-disabled .lafka-order-method-bar { display: none !important; }
+
+/* === Order method bar (W4-T11) === */
+.lafka-order-method-bar {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: var(--lafka-pdp-z-bar);
+  height: var(--lafka-pdp-bar-h);
+  background: var(--lafka-pdp-bg-dark);
+  color: #fff;
+  font-size: 12px;
+  display: flex; align-items: center;
+}
+.lafka-order-method-bar__inner {
+  width: 100%; max-width: 1280px;
+  margin: 0 auto; padding: 0 16px;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px;
+}
+.lafka-order-method-bar__method {
+  background: none; border: none; color: #fff;
+  display: flex; align-items: center; gap: 6px;
+  cursor: pointer; padding: 0; font: inherit;
+}
+.lafka-order-method-bar__location { text-decoration: underline; text-underline-offset: 3px; }
+.lafka-order-method-bar__switch { color: #ffd166; margin-left: 6px; font-weight: 500; }
+.lafka-order-method-bar__right { display: flex; gap: 12px; align-items: center; }
+.lafka-order-method-bar__phone { color: #fff; text-decoration: none; }
+
+@media (max-width: 720px) {
+  .lafka-order-method-bar { height: var(--lafka-pdp-bar-h-mobile); font-size: 11px; }
+  .lafka-order-method-bar__inner { padding: 0 10px; gap: 6px; }
+  .lafka-order-method-bar__phone { display: none; }
+}
+
+body { padding-top: var(--lafka-pdp-bar-h); }
+@media (max-width: 720px) { body { padding-top: var(--lafka-pdp-bar-h-mobile); } }
+
+/* === Method-switch modal (W4-T11) — built via createElement, no innerHTML === */
+.lafka-method-modal__overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.5);
+  z-index: var(--lafka-pdp-z-drawer);
+  display: flex; align-items: center; justify-content: center;
+}
+.lafka-method-modal {
+  background: #fff; padding: 24px;
+  border-radius: var(--lafka-pdp-radius);
+  max-width: 320px; width: calc(100% - 32px);
+  position: relative;
+}
+.lafka-method-modal h3 { margin: 0 0 16px; font-size: 16px; }
+.lafka-method-modal button:not(.lafka-method-modal__close) {
+  display: block; width: 100%;
+  padding: 12px; margin: 8px 0;
+  background: #fff; border: 1.5px solid var(--lafka-pdp-border);
+  border-radius: var(--lafka-pdp-radius-chip);
+  font: inherit; cursor: pointer; text-align: left;
+}
+.lafka-method-modal button:not(.lafka-method-modal__close):hover {
+  border-color: var(--lafka-pdp-accent);
+  background: var(--lafka-pdp-bg-warm);
+}
+.lafka-method-modal__close {
+  position: absolute; top: 8px; right: 12px;
+  background: none; border: none;
+  font-size: 22px; cursor: pointer;
+  color: var(--lafka-pdp-muted);
+}
