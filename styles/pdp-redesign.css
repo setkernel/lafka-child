@@ -361,3 +361,111 @@ body { padding-top: var(--lafka-pdp-bar-h); }
   margin-bottom: 32px;
 }
 @media (max-width: 960px) { .lafka-pdp__hero { grid-template-columns: 1fr; gap: 16px; } }
+
+/* === PDP layout polish v5.8.5 — fix spacing issues observed post-deploy === */
+
+/* Hero grid: align both columns at top so right column doesn't get stretched
+   into a tall empty space below the summary card when the gallery image is
+   taller than the summary content. */
+.lafka-pdp__hero {
+  align-items: start;
+}
+
+/* Cap gallery image height so the right-column summary stays in proportion.
+   Without this, a 1200x1200 native pizza photo dominates the hero and the
+   summary card looks like a tiny widget on the side. */
+.lafka-pdp__gallery,
+.lafka-pdp__gallery .woocommerce-product-gallery,
+.lafka-pdp__gallery figure {
+  align-self: start;
+}
+.lafka-pdp__gallery img {
+  max-height: 540px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Summary card: tighten internal spacing so it feels content-dense rather
+   than padded out with whitespace. */
+.lafka-pdp-summary {
+  padding: 16px 18px;
+}
+.lafka-pdp-summary__title {
+  font-size: 24px;
+  margin: 0 0 4px;
+}
+.lafka-pdp-summary__short {
+  margin-bottom: 10px;
+}
+.lafka-pdp-summary__price {
+  font-size: 24px;
+  margin: 6px 0 12px;
+}
+.lafka-pdp-summary__cart-row {
+  margin-top: 12px;
+}
+.lafka-pdp-summary__trust {
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+/* Picker block: reduce vertical rhythm */
+.lafka-pdp-picker {
+  margin: 0 0 12px;
+}
+.lafka-pdp-picker__chips {
+  gap: 4px;
+}
+.lafka-pdp-chip__inner {
+  padding: 6px 10px;
+  min-width: 56px;
+}
+.lafka-pdp-chip__name {
+  font-size: 12px;
+}
+.lafka-pdp-chip__price {
+  font-size: 10px;
+  margin-top: 1px;
+}
+
+/* Upsell row: switch to auto-fit so 2-3 cards don't leave a yawning gap on
+   the right. minmax(180px, 1fr) keeps cards a reasonable size while letting
+   the row collapse gracefully when fewer than 4 candidates are available. */
+.lafka-pdp-upsell__grid {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+@media (max-width: 720px) {
+  .lafka-pdp-upsell__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tabs: adjust padding so panel content doesn't look orphaned */
+.lafka-pdp-tabs {
+  margin: 24px 0;
+  padding: 16px 20px;
+}
+.lafka-pdp-tabs__panel {
+  padding-top: 4px;
+}
+
+/* Related products: when the parent theme's template renders an empty
+   thumbnail (operator hasn't set a featured image), at least give the slot
+   a subtle background instead of a hard-edged empty rectangle. Doesn't fix
+   the underlying content gap — that's a wp-admin task. */
+.lafka-pdp__main .related.products .product img,
+.lafka-pdp__main .upsells.products .product img,
+.lafka-pdp__main ul.products .product img {
+  background: var(--lafka-pdp-bg-soft);
+  min-height: 100px;
+}
+
+/* The full-width below-fold sections (upsell, tabs, related) should not be
+   constrained by the hero grid — push them to span the container width. */
+.lafka-pdp-upsell,
+.lafka-pdp-tabs,
+.lafka-pdp .related.products,
+.lafka-pdp .upsells.products {
+  grid-column: 1 / -1;
+}
