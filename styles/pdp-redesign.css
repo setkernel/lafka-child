@@ -1,0 +1,38 @@
+/*
+ * PDP Redesign — Direction A (Modern Delivery App)
+ *
+ * Loaded only when lafka_pdp_redesign_enabled() returns true. Enqueued
+ * conditionally from lafka-child/functions.php (W4-T21). All component
+ * styles for the redesigned product detail page live here. Subsequent
+ * tasks (W4-T11..T20) append component sections to this file.
+ *
+ * @since lafka-child 5.8.0
+ */
+
+:root {
+  --lafka-pdp-accent: #e4584b;
+  --lafka-pdp-accent-dark: #c73d31;
+  --lafka-pdp-text: #1a1a1a;
+  --lafka-pdp-muted: #666;
+  --lafka-pdp-border: #e0e0e0;
+  --lafka-pdp-bg-soft: #fafafa;
+  --lafka-pdp-bg-warm: #fff5f0;
+  --lafka-pdp-bg-dark: #1a1a1a;
+  --lafka-pdp-radius: 8px;
+  --lafka-pdp-radius-chip: 6px;
+  --lafka-pdp-shadow-card: 0 1px 3px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.04);
+  --lafka-pdp-z-bar: 100;
+  --lafka-pdp-z-drawer: 1000;
+  --lafka-pdp-bar-h: 36px;
+  --lafka-pdp-bar-h-mobile: 32px;
+  --lafka-pdp-cta-h-mobile: 64px;
+}
+
+/*
+ * Safety net: if any redesign component renders while the feature flag
+ * is OFF (lafka-pdp-disabled body class added by functions.php), hide
+ * it. Defends against partials being included by accident.
+ */
+body.lafka-pdp-disabled .lafka-pdp,
+body.lafka-pdp-disabled .lafka-cart-drawer,
+body.lafka-pdp-disabled .lafka-order-method-bar { display: none !important; }
