@@ -1,0 +1,69 @@
+<?php
+/**
+ * PDP variation + addon pickers — size + crust chips, then toppings.
+ *
+ * Required global: $product (WC_Product instance). Renders inside the
+ * cart variations_form so the existing add-to-cart submit path still works.
+ *
+ * The Lafka addons hook 'woocommerce_before_add_to_cart_button' fires here
+ * to render the Pizza Toppings group via lafka-plugin's existing addon
+ * markup; we only restyle visually (chip CSS).
+ *
+ * @package LafkaChild\Partials
+ * @since   5.8.0
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+if ( empty( $product ) || ! is_a( $product, 'WC_Product' ) ) {
+    return;
+}
+
+$attributes = $product->get_variation_attributes();
+$variations = $product->is_type( 'variable' ) ? $product->get_available_variations() : array();
+$prices_by_attrs = array();
+foreach ( $variations as $v ) {
+    $key = wp_json_encode( $v['attributes'] );
+    $prices_by_attrs[ $key ] = wc_format_decimal( (string) $v['display_price'], 2 );
+}
+?>
+<div class="lafka-pdp-pickers" data-prices='<?php echo esc_attr( wp_json_encode( $prices_by_attrs ) ); ?>'>
+    <?php foreach ( $attributes as $attr_name => $options ): ?>
+        <?php
+        $taxonomy = wc_attribute_taxonomy_name( str_replace( 'attribute_', '', $attr_name ) );
+        $label    = wc_attribute_label( $attr_name, $product );
+        ?>
+        <fieldset class="lafka-pdp-picker" data-attribute="<?php echo esc_attr( $attr_name ); ?>" data-required="true">
+            <legend class="lafka-pdp-picker__label"><?php echo esc_html( $label ); ?></legend>
+            <div class="lafka-pdp-picker__chips" role="radiogroup" aria-required="true">
+                <?php foreach ( $options as $opt ): ?>
+                    <?php
+                    $term       = taxonomy_exists( $taxonomy ) ? get_term_by( 'slug', $opt, $taxonomy ) : null;
+                    $opt_label  = $term ? $term->name : $opt;
+                    $option_price = '';
+                    foreach ( $variations as $v ) {
+                        if ( ( $v['attributes'][ $attr_name ] ?? '' ) === $opt ) {
+                            $option_price = wc_price( $v['display_price'] );
+                            break;
+                        }
+                    }
+                    ?>
+                    <label class="lafka-pdp-chip">
+                        <input type="radio" name="<?php echo esc_attr( $attr_name ); ?>" value="<?php echo esc_attr( $opt ); ?>">
+                        <span class="lafka-pdp-chip__inner">
+                            <span class="lafka-pdp-chip__name"><?php echo esc_html( $opt_label ); ?></span>
+                            <?php if ( $option_price ): ?>
+                                <span class="lafka-pdp-chip__price"><?php echo wp_kses_post( $option_price ); ?></span>
+                            <?php endif; ?>
+                        </span>
+                    </label>
+                <?php endforeach; ?>
+            </div>
+        </fieldset>
+    <?php endforeach; ?>
+
+    <?php
+    // Lafka addons (Pizza Toppings) hook into woocommerce_before_add_to_cart_button.
+    do_action( 'woocommerce_before_add_to_cart_button' );
+    ?>
+</div>

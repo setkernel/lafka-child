@@ -103,3 +103,55 @@ body { padding-top: var(--lafka-pdp-bar-h); }
   font-size: 22px; cursor: pointer;
   color: var(--lafka-pdp-muted);
 }
+
+/* === PDP pickers (W4-T12) === */
+.lafka-pdp-picker { border: none; padding: 0; margin: 0 0 16px; }
+.lafka-pdp-picker__label {
+  display: block;
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--lafka-pdp-text);
+  margin: 0 0 8px;
+}
+.lafka-pdp-picker__chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.lafka-pdp-chip { display: inline-flex; align-items: center; cursor: pointer; user-select: none; }
+.lafka-pdp-chip input { position: absolute; opacity: 0; pointer-events: none; }
+.lafka-pdp-chip__inner {
+  display: inline-flex; flex-direction: column; align-items: center;
+  padding: 8px 14px;
+  border: 1.5px solid var(--lafka-pdp-border);
+  border-radius: var(--lafka-pdp-radius-chip);
+  background: #fff;
+  transition: border-color .12s, background .12s, color .12s;
+  text-align: center; min-width: 64px;
+}
+.lafka-pdp-chip__name { font-size: 13px; font-weight: 500; }
+.lafka-pdp-chip__price { font-size: 11px; color: var(--lafka-pdp-muted); margin-top: 2px; }
+.lafka-pdp-chip:hover .lafka-pdp-chip__inner { border-color: var(--lafka-pdp-accent); }
+.lafka-pdp-chip:has(:checked) .lafka-pdp-chip__inner {
+  border-color: var(--lafka-pdp-accent);
+  background: var(--lafka-pdp-accent);
+  color: #fff;
+}
+.lafka-pdp-chip:has(:checked) .lafka-pdp-chip__price { color: rgba(255,255,255,.85); }
+.lafka-pdp-chip:focus-within .lafka-pdp-chip__inner {
+  outline: 2px solid var(--lafka-pdp-accent-dark);
+  outline-offset: 2px;
+}
+
+/* Toppings list (rendered by Lafka addons output, restyled via wrapper class) */
+.lafka-pdp-toppings { background: var(--lafka-pdp-bg-warm); border-radius: var(--lafka-pdp-radius); padding: 12px; margin: 14px 0; }
+.lafka-pdp-toppings summary {
+  cursor: pointer; font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  list-style: none; display: flex; justify-content: space-between;
+  padding: 0;
+}
+.lafka-pdp-toppings summary::-webkit-details-marker { display: none; }
+.lafka-pdp-toppings .muted { color: var(--lafka-pdp-muted); font-weight: normal; text-transform: none; letter-spacing: 0; }
+.lafka-pdp-toppings__list { list-style: none; padding: 0; margin: 8px 0 0; }
+.lafka-pdp-topping { padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 12px; }
+.lafka-pdp-topping:last-child { border-bottom: none; }
+.lafka-pdp-topping label { display: flex; justify-content: space-between; align-items: center; cursor: pointer; gap: 8px; }
+.lafka-pdp-topping__price { color: var(--lafka-pdp-muted); font-size: 11px; }
+.lafka-pdp-topping label:has(:checked) .lafka-pdp-topping__price { color: var(--lafka-pdp-accent); font-weight: 600; }
