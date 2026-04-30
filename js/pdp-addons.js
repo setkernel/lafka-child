@@ -48,15 +48,77 @@
 		return c.position === 'right' ? num + sym : sym + num;
 	}
 
-	function refreshSummary( $group ) {
+	/**
+	 * Gather currently-selected variation attribute values from the form.
+	 * Looks at both WC's standard <select> pickers and lafka redesign's
+	 * radio chips, mirroring what addons.js does internally.
+	 *
+	 * Returns { pa_size: 'medium', pa_crust: 'thin', ... }
+	 */
+	function getAttributeSelections( $form ) {
+		var sels = {};
+		$form.find( 'table.variations select' ).each( function () {
+			var id = $( this ).attr( 'id' );
+			if ( id ) {
+				sels[ id ] = $( this ).find( 'option:selected' ).val();
+			}
+		} );
+		$form.find( '.lafka-pdp-pickers input[type=radio]:checked' ).each( function () {
+			var name = $( this ).attr( 'name' ) || '';
+			if ( name.indexOf( 'attribute_' ) === 0 ) {
+				sels[ name.substring( 'attribute_'.length ) ] = $( this ).val();
+			}
+		} );
+		return sels;
+	}
+
+	/**
+	 * Resolve the effective price for an addon input given the current
+	 * variation selections.
+	 *
+	 * Why we compute this instead of trusting data-raw-price: the plugin's
+	 * addons.js calls `.prop('data-raw-price', c)` when the size changes,
+	 * which sets a JS property literally called "data-raw-price" on the
+	 * element — it does NOT update the `data-raw-price` HTML attribute or
+	 * jQuery's data cache. So `$el.data('raw-price')` returns the ORIGINAL
+	 * page-render price, not the per-size price. The displayed wc_price
+	 * span updates correctly (replaceWith on the span's innerHTML), but
+	 * the stored price doesn't.
+	 *
+	 * Reading directly from the data-attribute-raw-prices JSON matrix is
+	 * the source-of-truth approach — it's stable per page-render and
+	 * always present when per-attribute pricing is configured.
+	 */
+	function getEffectivePrice( $input, attrSelections ) {
+		var matrix = $input.data( 'attribute-raw-prices' );
+		if ( matrix && typeof matrix === 'object' ) {
+			for ( var attr in attrSelections ) {
+				if ( ! Object.prototype.hasOwnProperty.call( attrSelections, attr ) ) {
+					continue;
+				}
+				var val = attrSelections[ attr ];
+				if ( matrix[ attr ] && val in matrix[ attr ] ) {
+					var p = parseFloat( matrix[ attr ][ val ] );
+					if ( ! isNaN( p ) ) {
+						return p;
+					}
+				}
+			}
+		}
+		// Fallback for non-matrix pricing: the input's original data-raw-price
+		// (set at page render). Read via .attr() not .data() to avoid jQuery's
+		// data-cache returning stale values.
+		var fallback = parseFloat( $input.attr( 'data-raw-price' ) );
+		return isNaN( fallback ) ? 0 : fallback;
+	}
+
+	function refreshSummary( $group, $form ) {
+		var attrSelections = getAttributeSelections( $form );
 		var count = 0;
 		var total = 0;
 		$group.find( 'input.addon-checkbox:checked, input.addon-radio:checked' ).each( function () {
 			count++;
-			var p = parseFloat( $( this ).data( 'raw-price' ) );
-			if ( ! isNaN( p ) ) {
-				total += p;
-			}
+			total += getEffectivePrice( $( this ), attrSelections );
 		} );
 		var $summary = $group.find( '.lafka-addon-summary' ).first();
 		if ( ! $summary.length ) {
@@ -71,7 +133,7 @@
 		}
 	}
 
-	function initGroup( $group ) {
+	function initGroup( $group, $form ) {
 		var $heading = $group.find( '.addon-name' ).first();
 		if ( ! $heading.length ) {
 			return;
@@ -84,7 +146,7 @@
 			.attr( 'tabindex', '0' )
 			.attr( 'aria-expanded', $group.attr( 'data-collapsed' ) === 'true' ? 'false' : 'true' );
 
-		refreshSummary( $group );
+		refreshSummary( $group, $form );
 	}
 
 	$( function () {
@@ -97,7 +159,13 @@
 
 		function initAll() {
 			$form.find( '.product-addon' ).each( function () {
-				initGroup( $( this ) );
+				initGroup( $( this ), $form );
+			} );
+		}
+
+		function refreshAll() {
+			$form.find( '.product-addon' ).each( function () {
+				refreshSummary( $( this ), $form );
 			} );
 		}
 
@@ -105,9 +173,6 @@
 
 		// Toggle group expand/collapse on heading click + keyboard.
 		$form.on( 'click keydown', '.product-addon .addon-name', function ( e ) {
-			// Don't toggle when clicking the summary span itself (no event
-			// would fire from there since it's inside the heading, but guard
-			// anyway for clarity).
 			if ( e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ' ) {
 				return;
 			}
@@ -120,15 +185,21 @@
 
 		// Selection change → refresh that group's summary.
 		$form.on( 'change', '.product-addon input', function () {
-			refreshSummary( $( this ).closest( '.product-addon' ) );
+			refreshSummary( $( this ).closest( '.product-addon' ), $form );
 		} );
 
 		// Plugin events that signal addon re-pricing (e.g. size change).
+		// Recompute totals for ALL groups since per-size matrix prices apply
+		// across groups uniformly when the customer changes pizza size.
 		$form.on( 'lafka-product-addons-update updated_addons found_variation', function () {
-			// Defer one tick so addons.js has finished updating data-raw-price
-			// on each checkbox before we read it.
-			setTimeout( initAll, 0 );
+			setTimeout( refreshAll, 0 );
 		} );
+
+		// Also catch the size-picker radio changes directly — the plugin
+		// fires lafka-product-addons-update only after a debounced 300ms
+		// delay, so we want a more responsive update right when the
+		// customer clicks a size chip.
+		$( document ).on( 'change', '.lafka-pdp-pickers input[type=radio]', refreshAll );
 
 		// Re-init when WC swaps the variation form (e.g. quick-view, AJAX).
 		$( document.body ).on( 'wc_variation_form', initAll );
