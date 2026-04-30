@@ -47,19 +47,44 @@
     return null;
   }
 
-  function getAddonDelta(currentSize) {
+  function bareAttrMap(attrs) {
+    // attrs come keyed by 'attribute_pa_size'; lafka-plugin emits prices
+    // keyed by bare 'pa_size'. Strip the prefix.
+    var out = {};
+    Object.keys(attrs).forEach(function (k) {
+      var bare = k.indexOf('attribute_') === 0 ? k.substring('attribute_'.length) : k;
+      out[bare] = attrs[k];
+    });
+    return out;
+  }
+
+  function getAddonDelta(allAttrs) {
+    var attrMap = bareAttrMap(allAttrs);
     var total = 0;
-    document.querySelectorAll('input[name^="lafka_addon"]:checked').forEach(function (input) {
-      var label = input.closest('.lafka-pdp-topping');
-      if (!label) return;
-      var priceLabel = label.querySelector('[data-lafka-topping-price]');
-      if (!priceLabel) return;
-      var data;
-      try { data = JSON.parse(priceLabel.dataset.lafkaToppingPrice || '{}'); }
-      catch (e) { return; }
-      var sizeKey = currentSize ? currentSize.replace(/^pa_size:/, '') : 'medium';
-      var delta = parseFloat(data[sizeKey] || data.medium || '0');
-      if (!isNaN(delta)) total += delta;
+    document.querySelectorAll('input[name^="addon-"]:checked').forEach(function (input) {
+      var price = null;
+      // Canonical: lafka-plugin's renderer puts the per-attribute price
+      // matrix on each addon input as data-attribute-prices, shape
+      // { "pa_size": { "small": "1.00", "medium": "1.50" }, ... }.
+      var attrPricesJson = input.getAttribute('data-attribute-prices');
+      if (attrPricesJson) {
+        try {
+          var attrPrices = JSON.parse(attrPricesJson);
+          Object.keys(attrPrices).forEach(function (taxonomyName) {
+            if (price !== null) return;
+            var slug = attrMap[taxonomyName];
+            if (slug && attrPrices[taxonomyName] && attrPrices[taxonomyName][slug] !== undefined) {
+              price = parseFloat(attrPrices[taxonomyName][slug]);
+            }
+          });
+        } catch (e) { /* fall through to flat price */ }
+      }
+      // Flat-price fallback (addon without per-attribute pricing).
+      if (price === null) {
+        var raw = input.getAttribute('data-price');
+        if (raw !== null && raw !== '') price = parseFloat(raw);
+      }
+      if (price !== null && !isNaN(price)) total += price;
     });
     return total;
   }
@@ -72,29 +97,25 @@
     return ok;
   }
 
-  function updateToppingLabels(currentSize) {
-    document.querySelectorAll('[data-lafka-topping-price]').forEach(function (labelEl) {
-      var data;
-      try { data = JSON.parse(labelEl.dataset.lafkaToppingPrice || '{}'); }
-      catch (e) { return; }
-      var sizeKey = currentSize || 'medium';
-      var price = parseFloat(data[sizeKey] || data.medium || '0');
-      labelEl.textContent = price > 0 ? '+$' + price.toFixed(2) : '';
-    });
-  }
-
   function recompute() {
     var attrs = getSelectedAttrs();
-    var sizeAttr = attrs['attribute_pa_size'] || attrs['pa_size'] || '';
     var basePrice = findVariationPrice(attrs);
-    var addonDelta = getAddonDelta(sizeAttr);
+    var addonDelta = getAddonDelta(attrs);
     var total = (basePrice || 0) + addonDelta;
 
     if (priceEl && basePrice !== null) {
       priceEl.textContent = '$' + total.toFixed(2);
     }
 
-    updateToppingLabels(sizeAttr);
+    // Per-topping price label updates (e.g. "+$1.50" next to each topping)
+    // are handled by lafka-plugin's addons.js via the formatted_price
+    // mechanism on the lafka-product-addons-update event. Trigger that
+    // event so addons.js re-resolves the per-attribute prices and updates
+    // the visible topping labels.
+    if (window.jQuery) {
+      var $form = window.jQuery(root).closest('form.cart');
+      if ($form.length) $form.trigger('lafka-product-addons-update');
+    }
 
     var ok = allRequiredSet() && basePrice !== null;
     ctas.forEach(function (cta) {
@@ -119,7 +140,7 @@
 
   root.addEventListener('change', recompute);
   document.addEventListener('change', function (e) {
-    if (e.target.matches && e.target.matches('input[name^="lafka_addon"]')) recompute();
+    if (e.target.matches && e.target.matches('input[name^="addon-"]')) recompute();
   });
   recompute();
 })();

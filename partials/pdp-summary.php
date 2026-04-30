@@ -118,12 +118,32 @@ $form_action = apply_filters( 'woocommerce_add_to_cart_form_action', $product->g
                 //
                 // We need woocommerce_single_variation to fire so the lafka-plugin
                 // addon system's repositioned display() callback runs (it's at
-                // priority 15, between WC's two defaults). Solution: remove WC's
-                // defaults before firing, fire the action, then leave the rest of
-                // the form in our control.
-                remove_action( 'woocommerce_single_variation', 'woocommerce_single_variation', 10 );
-                remove_action( 'woocommerce_single_variation', 'woocommerce_single_variation_add_to_cart_button', 20 );
+                // priority 15, between WC's two defaults).
+                //
+                // CRITICAL: Restore the callbacks IMMEDIATELY after firing.
+                // Previously these remove_actions persisted for the rest of the
+                // request, which broke quick-view AJAX, combo-product partials,
+                // and any later product render in the same request that
+                // expected WC's stock single_variation behavior.
+                $lafka_wc_sv_priority_10_was_hooked = has_action( 'woocommerce_single_variation', 'woocommerce_single_variation' );
+                $lafka_wc_sv_priority_20_was_hooked = has_action( 'woocommerce_single_variation', 'woocommerce_single_variation_add_to_cart_button' );
+
+                if ( false !== $lafka_wc_sv_priority_10_was_hooked ) {
+                    remove_action( 'woocommerce_single_variation', 'woocommerce_single_variation', $lafka_wc_sv_priority_10_was_hooked );
+                }
+                if ( false !== $lafka_wc_sv_priority_20_was_hooked ) {
+                    remove_action( 'woocommerce_single_variation', 'woocommerce_single_variation_add_to_cart_button', $lafka_wc_sv_priority_20_was_hooked );
+                }
+
                 do_action( 'woocommerce_single_variation' );
+
+                if ( false !== $lafka_wc_sv_priority_10_was_hooked ) {
+                    add_action( 'woocommerce_single_variation', 'woocommerce_single_variation', $lafka_wc_sv_priority_10_was_hooked );
+                }
+                if ( false !== $lafka_wc_sv_priority_20_was_hooked ) {
+                    add_action( 'woocommerce_single_variation', 'woocommerce_single_variation_add_to_cart_button', $lafka_wc_sv_priority_20_was_hooked );
+                }
+
                 do_action( 'woocommerce_after_single_variation' );
                 ?>
             </div>
