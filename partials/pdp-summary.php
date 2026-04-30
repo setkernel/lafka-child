@@ -80,9 +80,9 @@ $form_action = apply_filters( 'woocommerce_add_to_cart_form_action', $product->g
                     <?php do_action( 'woocommerce_before_add_to_cart_quantity' ); ?>
 
                     <div class="lafka-pdp-summary__cart-row">
-                        <div class="lafka-pdp-summary__qty">
+                        <div class="quantity lafka-pdp-summary__qty">
                             <button type="button" class="lafka-pdp-qty__btn" data-lafka-qty="-1" aria-label="<?php esc_attr_e( 'Decrease quantity', 'lafka-child' ); ?>">−</button>
-                            <input type="number" name="quantity" value="1" min="1" class="lafka-pdp-qty__input">
+                            <input type="number" name="quantity" value="1" min="1" class="qty lafka-pdp-qty__input">
                             <button type="button" class="lafka-pdp-qty__btn" data-lafka-qty="+1" aria-label="<?php esc_attr_e( 'Increase quantity', 'lafka-child' ); ?>">+</button>
                         </div>
                         <button type="submit" class="lafka-pdp-summary__cta" data-lafka-add-to-cart disabled data-lafka-state="incomplete">
@@ -96,7 +96,7 @@ $form_action = apply_filters( 'woocommerce_add_to_cart_form_action', $product->g
                             <span data-lafka-qty-display>1</span>
                             <button type="button" data-lafka-qty="+1" aria-label="<?php esc_attr_e( 'Increase', 'lafka-child' ); ?>">+</button>
                         </div>
-                        <button type="submit" class="lafka-pdp-mobile-cta__btn" data-lafka-add-to-cart disabled>
+                        <button type="submit" class="lafka-pdp-mobile-cta__btn" data-lafka-add-to-cart disabled data-lafka-state="incomplete">
                             <span data-lafka-cta-label><?php esc_html_e( 'Pick a size', 'lafka-child' ); ?></span>
                         </button>
                     </div>
@@ -165,9 +165,9 @@ $form_action = apply_filters( 'woocommerce_add_to_cart_form_action', $product->g
             <?php do_action( 'woocommerce_before_add_to_cart_quantity' ); ?>
 
             <div class="lafka-pdp-summary__cart-row">
-                <div class="lafka-pdp-summary__qty">
+                <div class="quantity lafka-pdp-summary__qty">
                     <button type="button" class="lafka-pdp-qty__btn" data-lafka-qty="-1" aria-label="<?php esc_attr_e( 'Decrease quantity', 'lafka-child' ); ?>">−</button>
-                    <input type="number" name="quantity" value="1" min="1" class="lafka-pdp-qty__input">
+                    <input type="number" name="quantity" value="1" min="1" class="qty lafka-pdp-qty__input">
                     <button type="button" class="lafka-pdp-qty__btn" data-lafka-qty="+1" aria-label="<?php esc_attr_e( 'Increase quantity', 'lafka-child' ); ?>">+</button>
                 </div>
                 <button type="submit" class="lafka-pdp-summary__cta" data-lafka-add-to-cart>

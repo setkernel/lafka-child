@@ -37,8 +37,14 @@
     var modal   = el('div', { 'class': 'lafka-method-modal', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'lafka-method-modal-title' });
     modal.appendChild(el('h3', { id: 'lafka-method-modal-title' }, 'How are you getting your order?'));
 
+    // Operator-specific labels come from wp_localize_script (resolver-backed).
+    // Never hardcode literals — lafka-child is public OSS. Falls back to a
+    // generic label if the localized data is missing.
+    var localized   = (typeof window.lafkaOrderMethodLabels === 'object') ? window.lafkaOrderMethodLabels : {};
+    var pickupAddr  = (localized.pickupLabel || '').trim();
+    var pickupText  = pickupAddr ? ('🏪  Pickup at ' + pickupAddr) : '🏪  Pickup';
     var btnDelivery = el('button', { type: 'button', 'data-method': 'delivery' }, '🚚  Delivery');
-    var btnPickup   = el('button', { type: 'button', 'data-method': 'pickup' },   '🏪  Pickup at 512 Sackville Dr');
+    var btnPickup   = el('button', { type: 'button', 'data-method': 'pickup' },   pickupText);
     var btnClose    = el('button', { type: 'button', 'class': 'lafka-method-modal__close', 'aria-label': 'Close' }, '×');
 
     modal.appendChild(btnDelivery);

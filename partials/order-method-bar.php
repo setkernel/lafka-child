@@ -39,9 +39,19 @@ if ( preg_match( '/-(\d{2}:\d{2})$/', $today_hours, $m ) ) {
                     : esc_html__( 'Delivery to', 'lafka-child' ); ?>
             </span>
             <span class="lafka-order-method-bar__location">
-                <?php echo 'pickup' === $method
-                    ? esc_html( $info['address_short'] ?: '512 Sackville Dr' )
-                    : esc_html( $info['city'] . ', ' . $info['region'] ); ?>
+                <?php
+                if ( 'pickup' === $method ) {
+                    // Operator-specific value MUST come from the resolver
+                    // (theme_mod → option → WP-core → empty). Never hardcode
+                    // a literal address — the lafka-* repos are public OSS
+                    // and operator data must not leak into them. If the
+                    // resolver returns empty, render an empty span rather
+                    // than fall back to a literal string.
+                    echo esc_html( $info['address_short'] );
+                } else {
+                    echo esc_html( $info['city'] . ', ' . $info['region'] );
+                }
+                ?>
             </span>
             <span class="lafka-order-method-bar__switch"><?php esc_html_e( 'Switch', 'lafka-child' ); ?></span>
         </button>

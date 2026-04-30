@@ -586,6 +586,21 @@ add_action( 'wp_enqueue_scripts', function () {
         array( 'in_footer' => true, 'strategy' => 'defer' )
     );
 
+    // Localize operator-specific labels to the order-method script.
+    // Must come from the resolver (theme_mod → option → empty); never
+    // hardcode literals into the JS — lafka-child is public OSS.
+    if ( function_exists( 'lafka_get_restaurant_info' ) ) {
+        $info = lafka_get_restaurant_info();
+        wp_localize_script(
+            'lafka-order-method',
+            'lafkaOrderMethodLabels',
+            array(
+                'pickupLabel'   => trim( (string) ( $info['address_short'] ?? '' ) ),
+                'deliveryLabel' => trim( (string) ( ( $info['city'] ?? '' ) ) ),
+            )
+        );
+    }
+
     wp_enqueue_script(
         'lafka-cart-drawer',
         $stylesheet_uri . '/js/cart-drawer.js',

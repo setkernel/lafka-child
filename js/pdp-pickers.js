@@ -138,6 +138,56 @@
     });
   }
 
+  // Quantity buttons. The canonical source of truth is the form's
+  // <input name="quantity"> (lives in the desktop cart row); both desktop
+  // and mobile +/- buttons mutate that input, then we mirror the value to
+  // every [data-lafka-qty-display] span. Without this handler the buttons
+  // were dead — clicking them did nothing — and submitting from the
+  // mobile sticky bar always shipped qty 1 regardless of what the
+  // operator clicked.
+  function getQtyInput() {
+    var form = root.closest('form.cart');
+    return form ? form.querySelector('input[name="quantity"]') : null;
+  }
+
+  function syncQtyDisplays(value) {
+    document.querySelectorAll('[data-lafka-qty-display]').forEach(function (el) {
+      el.textContent = String(value);
+    });
+  }
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target && e.target.closest ? e.target.closest('[data-lafka-qty]') : null;
+    if (!btn) return;
+    var qtyInput = getQtyInput();
+    if (!qtyInput) return;
+    var delta = parseInt(btn.getAttribute('data-lafka-qty'), 10) || 0;
+    var min   = parseInt(qtyInput.getAttribute('min') || '1', 10) || 1;
+    var maxAttr = qtyInput.getAttribute('max');
+    var max   = maxAttr ? parseInt(maxAttr, 10) : Infinity;
+    var current = parseInt(qtyInput.value, 10) || min;
+    var next  = Math.max(min, Math.min(max, current + delta));
+    if (next === current) return;
+    qtyInput.value = String(next);
+    syncQtyDisplays(next);
+    // Trigger the addons-update event so addon-cost × qty totals refresh.
+    if (window.jQuery) {
+      var $form = window.jQuery(qtyInput).closest('form.cart');
+      if ($form.length) $form.trigger('lafka-product-addons-update');
+    }
+    // Trigger native change event so any other listeners pick it up.
+    qtyInput.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+
+  // Direct keyboard edits to the input also need to mirror to the mobile
+  // display. The element exists on both branches (variable + simple).
+  document.addEventListener('input', function (e) {
+    if (!e.target || !e.target.matches) return;
+    if (!e.target.matches('input[name="quantity"]')) return;
+    var v = parseInt(e.target.value, 10);
+    if (!isNaN(v)) syncQtyDisplays(v);
+  });
+
   root.addEventListener('change', recompute);
   document.addEventListener('change', function (e) {
     if (e.target.matches && e.target.matches('input[name^="addon-"]')) recompute();
