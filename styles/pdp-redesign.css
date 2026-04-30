@@ -891,6 +891,40 @@ body { padding-top: var(--lafka-pdp-bar-h); }
 
 .lafka-pdp-tabs__panel[hidden] { display: none; }
 
+/*
+ * === Cart page: hide orphan ":" rows for addon continuation lines ===
+ *
+ * The lafka-plugin's get_item_data emits the addon group label
+ * (e.g. "Premium Toppings") only on the FIRST topping in each group,
+ * with empty `name` for continuation rows so the label doesn't repeat
+ * for every topping. WooCommerce's cart template renders each row as
+ * <dt>{name}:</dt><dd>{value}</dd>, which means empty `name` becomes
+ * a <dt class="variation-">:</dt> — a stray colon on its own line.
+ *
+ * lafka-theme already hides this for the legacy .cart-info layout +
+ * the mini-cart widget. The modern WC cart shortcode uses td.product-
+ * name directly (no .cart-info wrapper), which the parent rule misses.
+ * Patch the gap here.
+ *
+ * Defense-in-depth: also hide via [class$="variation-"] in case the
+ * exact class differs across WC versions.
+ */
+.woocommerce-cart-form td.product-name dl.variation dt.variation-,
+.woocommerce-cart-form td.product-name dl.variation dt[class="variation-"],
+.cart_item td.product-name dl.variation dt.variation-,
+.cart_item td.product-name dl.variation dt[class="variation-"] {
+  display: none;
+}
+
+/* The corresponding <dd> for the orphan dt should indent slightly so
+   it visually associates with the parent group above it, instead of
+   appearing as a top-level entry. */
+.woocommerce-cart-form td.product-name dl.variation dt.variation- + dd,
+.cart_item td.product-name dl.variation dt.variation- + dd {
+  padding-left: 1em;
+  color: var(--lafka-pdp-muted, #5e5e5e);
+}
+
 /* === PDP container (W4-T20) === */
 .lafka-pdp__main { max-width: 1280px; margin: 0 auto; padding: 24px 16px; }
 
