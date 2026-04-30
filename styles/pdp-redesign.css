@@ -288,25 +288,44 @@ body { padding-top: var(--lafka-pdp-bar-h); }
   object-fit: contain;
 }
 
-/* Price text inside the label: parens + wc_price() output.
-   The plugin builds the trailing "(<wc_price>)" via wp_kses_post. We
-   right-align it via flex spacing, scale the wc_price markup, and
-   color it so it pops against the topping name. */
-.product-addon p.form-row > label .woocommerce-Price-amount {
+/* Price block: wraps "($wc_price)" in <span class="lafka-addon-price">
+   (added in lafka-plugin v8.17.3). Targeting the wrapper rather than
+   the inner .woocommerce-Price-amount keeps the text-node parens part
+   of the element being right-aligned — without this, flex margin-left:
+   auto leaves the bare "(" stuck to the left of the label and orphans
+   ")$3.50" on the right with a huge whitespace gap.
+
+   Visual choice (theme): drop the parens and present as "+$3.50".
+   Plugin still emits "(...)" as the back-compat default for themes
+   that don't override. We hide the parens by zeroing font-size on
+   the wrapper and restoring it on the inner price span. */
+.product-addon p.form-row > label .lafka-addon-price {
   margin-left: auto;
+  font-size: 0;
   font-weight: 600;
-  font-size: 13px;
   color: var(--lafka-pdp-muted);
   white-space: nowrap;
 }
 
-.product-addon p.form-row > label .woocommerce-Price-amount sup {
+.product-addon p.form-row > label .lafka-addon-price::before {
+  content: "+";
+  font-size: 13px;
+  margin-right: 1px;
+  font-weight: 500;
+  color: inherit;
+}
+
+.product-addon p.form-row > label .lafka-addon-price .woocommerce-Price-amount {
+  font-size: 13px;
+}
+
+.product-addon p.form-row > label .lafka-addon-price sup {
   font-size: 0.7em;
   vertical-align: super;
   font-weight: 500;
 }
 
-.product-addon p.form-row > label:has(:checked) .woocommerce-Price-amount {
+.product-addon p.form-row > label:has(:checked) .lafka-addon-price {
   color: var(--lafka-pdp-accent);
 }
 
@@ -697,7 +716,11 @@ body { padding-top: var(--lafka-pdp-bar-h); }
     font-size: 14px;
   }
 
-  .product-addon p.form-row > label .woocommerce-Price-amount {
+  .product-addon p.form-row > label .lafka-addon-price::before {
+    font-size: 14px;
+  }
+
+  .product-addon p.form-row > label .lafka-addon-price .woocommerce-Price-amount {
     font-size: 14px;
   }
 }
