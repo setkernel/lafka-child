@@ -45,6 +45,23 @@
   var priceEl   = document.querySelector('[data-lafka-live-price]');
   var ctas      = document.querySelectorAll('[data-lafka-add-to-cart]');
   var ctaLabels = document.querySelectorAll('[data-lafka-cta-label]');
+  var formEl    = root.closest('form.cart');
+
+  // WC's canonical variations data — emitted as data-product_variations on
+  // the form (pdp-summary.php uses $product->get_available_variations()).
+  // This is the source of truth for resolving variation_id when the
+  // customer picks attributes. Without setting variation_id on the hidden
+  // input before submit, WC's add-to-cart handler rejects with "Please
+  // choose product options for X".
+  var wcVariations = [];
+  if (formEl) {
+    try {
+      var rawV = formEl.getAttribute('data-product_variations');
+      if (rawV) wcVariations = JSON.parse(rawV) || [];
+    } catch (e) { wcVariations = []; }
+  }
+
+  // Legacy: data-prices was a custom price map. Kept as a fallback only.
   var variationPrices;
   try { variationPrices = JSON.parse(root.dataset.prices || '{}'); }
   catch (e) { variationPrices = {}; }
@@ -57,6 +74,63 @@
     return attrs;
   }
 
+  function findMatchingVariation(attrs) {
+    if (!wcVariations.length) return null;
+    for (var i = 0; i < wcVariations.length; i++) {
+      var v = wcVariations[i];
+      if (!v || !v.attributes) continue;
+      var ok = true;
+      // Every attribute the user selected must match (or be wildcard '').
+      for (var k in attrs) {
+        if (!Object.prototype.hasOwnProperty.call(attrs, k)) continue;
+        var stored = v.attributes[k];
+        if (stored !== '' && stored != null && stored !== attrs[k]) {
+          ok = false;
+          break;
+        }
+      }
+      if (!ok) continue;
+      // Every non-wildcard attribute on the variation must be in the user
+      // selection too — prevents matching a 3-attribute variation when
+      // only 2 are picked.
+      for (var k2 in v.attributes) {
+        if (!Object.prototype.hasOwnProperty.call(v.attributes, k2)) continue;
+        if (v.attributes[k2] === '' || v.attributes[k2] == null) continue;
+        if (!Object.prototype.hasOwnProperty.call(attrs, k2)) {
+          ok = false;
+          break;
+        }
+      }
+      if (ok) return v;
+    }
+    return null;
+  }
+
+  function setVariationId(id, matchedVariation) {
+    if (!formEl) return;
+    var input = formEl.querySelector('input.variation_id, input[name="variation_id"]');
+    if (!input) return;
+    var newVal = String(id || 0);
+    if (input.value === newVal) return;
+    input.value = newVal;
+    // Mirror WC's variations widget: dispatch found_variation when a real
+    // variation is matched, reset_data when not. Any third-party plugin
+    // (the addon plugin's own found_variation listener; PERF-* listeners
+    // listening for variation choice) gets the same lifecycle they would
+    // with WC's stock variations form.
+    if (window.jQuery) {
+      var $form = window.jQuery(formEl);
+      if (matchedVariation && id) {
+        $form.trigger('found_variation', [matchedVariation]);
+      } else {
+        $form.trigger('reset_data');
+      }
+    }
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  // Legacy fallback price walker — only used when data-product_variations
+  // is missing or empty (e.g. third-party page builder rendering).
   function findVariationPrice(attrs) {
     var keys = Object.keys(variationPrices);
     for (var i = 0; i < keys.length; i++) {
@@ -126,7 +200,20 @@
 
   function recompute() {
     var attrs = getSelectedAttrs();
-    var basePrice = findVariationPrice(attrs);
+
+    // Resolve the matching variation via WC's canonical data — without this
+    // the hidden variation_id stays at 0 and WC's add-to-cart handler
+    // rejects with "Please choose product options for X". Falls back to
+    // the legacy data-prices walker only if WC variations data is missing.
+    var match = findMatchingVariation(attrs);
+    setVariationId(match ? (match.variation_id || 0) : 0, match);
+
+    var basePrice = null;
+    if (match && match.display_price !== undefined && match.display_price !== '') {
+      basePrice = parseFloat(match.display_price);
+    } else {
+      basePrice = findVariationPrice(attrs);
+    }
     var addonDelta = getAddonDelta(attrs);
     var total = (basePrice || 0) + addonDelta;
 
