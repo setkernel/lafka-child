@@ -257,11 +257,17 @@ body { padding-top: var(--lafka-pdp-bar-h); }
   gap: 10px;
   padding: 10px 2px;
   cursor: pointer;
-  font-size: 13px;
+  /* lafka-theme has site-wide `label { font-size: 12px !important }`
+     that cascades through. Use !important to win the cascade — this
+     is intentional, not a smell. */
+  font-size: 13px !important;
   color: var(--lafka-pdp-text);
   margin: 0;
   line-height: 1.4;
   transition: color .12s;
+  /* Override site-wide `label { text-transform: uppercase }` if the
+     theme decides addon options should be sentence case. Currently
+     leaving uppercase to match the rest of the PDP design tokens. */
 }
 
 .product-addon p.form-row > label:hover {
