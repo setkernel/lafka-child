@@ -206,23 +206,133 @@ body { padding-top: var(--lafka-pdp-bar-h); }
   margin-top: 10px;
 }
 
-/* Heading: matches .lafka-pdp-picker__label in the variation pickers above. */
+/*
+ * Heading is the click-target for the accordion. JS adds role=button +
+ * tabindex=0 + aria-expanded; CSS handles the visual affordance: caret
+ * indicator on the right that rotates on collapse, hover/focus state.
+ *
+ * The heading also hosts the live "<count> selected · +$X.XX" summary
+ * span (.lafka-addon-summary) which JS stamps in. When something is
+ * selected, the summary turns accent-colored to give the customer a
+ * sense of running total without needing to scroll back up.
+ */
 .product-addon .addon-name {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   color: var(--lafka-pdp-text);
-  margin: 0 0 8px;
-  padding: 0;
+  margin: 0;
+  padding: 4px 0;
   line-height: 1.4;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.product-addon .addon-name:hover {
+  color: var(--lafka-pdp-accent-dark);
+}
+
+.product-addon .addon-name:focus-visible {
+  outline: 2px solid var(--lafka-pdp-accent);
+  outline-offset: 4px;
+  border-radius: 3px;
+}
+
+/* Caret indicator at the right edge of the heading. Down when expanded,
+   right when collapsed. CSS-only chevron via two borders rotated 45°. */
+.product-addon .addon-name::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid currentcolor;
+  border-bottom: 2px solid currentcolor;
+  transform: rotate(45deg);
+  transition: transform .15s ease;
+  margin-left: 4px;
+  flex-shrink: 0;
+  position: relative;
+  top: -2px;
+  opacity: .55;
+}
+
+.product-addon[data-collapsed="true"] .addon-name::after {
+  transform: rotate(-45deg);
+  top: 0;
 }
 
 .product-addon .addon-name .required {
   color: var(--lafka-pdp-accent);
   text-decoration: none;
   margin-left: 4px;
+}
+
+/* Live selection summary: "<count> selected · +$X.XX" */
+.product-addon .lafka-addon-summary {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--lafka-pdp-muted);
+  white-space: nowrap;
+
+  /* Empty by default — JS populates after selection. Reserve space so the
+     caret doesn't jump when text appears. */
+  min-height: 1em;
+}
+
+.product-addon .lafka-addon-summary.is-active {
+  color: var(--lafka-pdp-accent);
+  font-weight: 600;
+}
+
+/*
+ * Collapsed state: hide the option list entirely. The heading bar
+ * remains visible (and clickable to re-expand). Padding shrinks so
+ * the collapsed group is compact.
+ */
+.product-addon[data-collapsed="true"] {
+  padding-bottom: 8px;
+}
+
+.product-addon[data-collapsed="true"] p.form-row,
+.product-addon[data-collapsed="true"] .lafka-addon-limit-message,
+.product-addon[data-collapsed="true"] .addon-description {
+  display: none;
+}
+
+/*
+ * Expanded state on desktop: 2-column grid. Cuts the vertical scroll
+ * roughly in half for groups with 16+ items. Each form-row becomes one
+ * grid cell; heading/description span the full width.
+ *
+ * Mobile (default block flow) keeps 1 column — narrower viewport,
+ * legibility priority.
+ */
+@media (min-width: 721px) {
+
+  .product-addon:not([data-collapsed="true"]) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 16px;
+    row-gap: 0;
+  }
+
+  .product-addon:not([data-collapsed="true"]) .addon-name,
+  .product-addon:not([data-collapsed="true"]) .addon-description {
+    grid-column: 1 / -1;
+  }
+
+  /* In 2-col mode, the visual rhythm comes from the gap, not borders.
+     Drop the inter-row borders to clean it up. */
+  .product-addon:not([data-collapsed="true"]) p.form-row {
+    border-top: none;
+  }
 }
 
 /* Description block (uncommon — only when operator filled it in) */
@@ -257,6 +367,7 @@ body { padding-top: var(--lafka-pdp-bar-h); }
   gap: 10px;
   padding: 10px 2px;
   cursor: pointer;
+
   /* lafka-theme has site-wide `label { font-size: 12px !important }`
      that cascades through. Use !important to win the cascade — this
      is intentional, not a smell. */
@@ -265,6 +376,7 @@ body { padding-top: var(--lafka-pdp-bar-h); }
   margin: 0;
   line-height: 1.4;
   transition: color .12s;
+
   /* Override site-wide `label { text-transform: uppercase }` if the
      theme decides addon options should be sentence case. Currently
      leaving uppercase to match the rest of the PDP design tokens. */
@@ -693,6 +805,20 @@ body { padding-top: var(--lafka-pdp-bar-h); }
   }
 
   .lafka-pdp-mobile-cta__btn:disabled { background: #ccc; }
+
+  /*
+   * Hide the floating mini-cart icon on mobile single-product pages.
+   * The sticky bottom cart-row IS the cart action; the floating cart
+   * icon is redundant and overlaps the cart-row's button text — the
+   * "Pick a crust to continue" CTA was rendering as "Pick a crust to
+   * contin..." with the cart icon eating the right side.
+   *
+   * Other page types (category, home) keep the floating cart icon
+   * since they don't have the sticky CTA bar.
+   */
+  body.single-product .lafka-search-cart-holder {
+    display: none;
+  }
 
   /*
    * Bottom padding accounts for the FULL height of the sticky cart-row,

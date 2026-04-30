@@ -641,6 +641,17 @@ add_action( 'wp_enqueue_scripts', function () {
             $version_for( 'js/upsell-modal.js' ),
             array( 'in_footer' => true, 'strategy' => 'defer' )
         );
+
+        // PDP addon UX layer: collapsible groups + selected-count summary
+        // in each addon group's heading. Sits on top of the lafka-plugin
+        // theme-agnostic addon markup; the plugin itself stays untouched.
+        wp_enqueue_script(
+            'lafka-pdp-addons',
+            $stylesheet_uri . '/js/pdp-addons.js',
+            array( 'jquery' ),
+            $version_for( 'js/pdp-addons.js' ),
+            array( 'in_footer' => true, 'strategy' => 'defer' )
+        );
     }
 }, 11 );
 
