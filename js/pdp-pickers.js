@@ -15,6 +15,33 @@
   var root = document.querySelector('.lafka-pdp-pickers');
   if (!root) return;
 
+  // Currency formatter — reads symbol, position, separators, and decimal
+  // count from a localized var (wired in lafka-child/functions.php from
+  // WC's settings). Falls back to a USD-style default if the localized
+  // data isn't present (e.g. third-party page builder that doesn't
+  // enqueue our script in the standard way).
+  var CURRENCY = (typeof window.lafkaPdpCurrency === 'object' && window.lafkaPdpCurrency)
+    ? window.lafkaPdpCurrency
+    : { symbol: '$', position: 'left', thousandSep: ',', decimalSep: '.', decimals: 2 };
+
+  function formatPrice(amount) {
+    var n = parseFloat(amount);
+    if (isNaN(n)) n = 0;
+    var dec = CURRENCY.decimals != null ? CURRENCY.decimals : 2;
+    var fixed = n.toFixed(dec);
+    var parts = fixed.split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, CURRENCY.thousandSep || ',');
+    var formatted = (parts.length > 1 ? parts.join(CURRENCY.decimalSep || '.') : parts[0]);
+    var sym = CURRENCY.symbol || '$';
+    switch (CURRENCY.position) {
+      case 'right':       return formatted + sym;
+      case 'left_space':  return sym + ' ' + formatted;
+      case 'right_space': return formatted + ' ' + sym;
+      case 'left':
+      default:            return sym + formatted;
+    }
+  }
+
   var priceEl   = document.querySelector('[data-lafka-live-price]');
   var ctas      = document.querySelectorAll('[data-lafka-add-to-cart]');
   var ctaLabels = document.querySelectorAll('[data-lafka-cta-label]');
@@ -104,7 +131,7 @@
     var total = (basePrice || 0) + addonDelta;
 
     if (priceEl && basePrice !== null) {
-      priceEl.textContent = '$' + total.toFixed(2);
+      priceEl.textContent = formatPrice(total);
     }
 
     // Per-topping price label updates (e.g. "+$1.50" next to each topping)
@@ -124,7 +151,7 @@
     });
     ctaLabels.forEach(function (label) {
       if (ok) {
-        label.textContent = 'Add to Cart · $' + total.toFixed(2);
+        label.textContent = 'Add to Cart · ' + formatPrice(total);
       } else {
         var firstMissing = null;
         var fields = root.querySelectorAll('[data-required="true"]');

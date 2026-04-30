@@ -617,6 +617,23 @@ add_action( 'wp_enqueue_scripts', function () {
             $version_for( 'js/pdp-pickers.js' ),
             array( 'in_footer' => true, 'strategy' => 'defer' )
         );
+
+        // Localize WC currency formatter so the live-price + CTA-label JS
+        // updates honour woocommerce_currency_pos and the symbol — without
+        // this, JS hardcoded `$` leaked operator currency and broke any
+        // non-USD shop.
+        wp_localize_script(
+            'lafka-pdp-pickers',
+            'lafkaPdpCurrency',
+            array(
+                'symbol'      => function_exists( 'get_woocommerce_currency_symbol' ) ? html_entity_decode( get_woocommerce_currency_symbol() ) : '$',
+                'position'    => get_option( 'woocommerce_currency_pos', 'left' ),
+                'thousandSep' => function_exists( 'wc_get_price_thousand_separator' ) ? wc_get_price_thousand_separator() : ',',
+                'decimalSep'  => function_exists( 'wc_get_price_decimal_separator' ) ? wc_get_price_decimal_separator() : '.',
+                'decimals'    => function_exists( 'wc_get_price_decimals' ) ? (int) wc_get_price_decimals() : 2,
+            )
+        );
+
         wp_enqueue_script(
             'lafka-upsell-modal',
             $stylesheet_uri . '/js/upsell-modal.js',

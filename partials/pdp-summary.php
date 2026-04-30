@@ -39,7 +39,13 @@ $form_action = apply_filters( 'woocommerce_add_to_cart_form_action', $product->g
     </div>
 
     <div class="lafka-pdp-summary__price">
-        <span data-lafka-live-price>$<?php echo esc_html( wc_format_decimal( (string) $product->get_price(), 2 ) ); ?></span>
+        <?php // Currency symbol/position MUST come from WC settings (wc_price()
+              // honours woocommerce_currency_pos + currency code). Hardcoding
+              // `$` leaks the operator's currency and breaks any non-USD shop.
+              // JS replaces this textContent on size change via the formatter
+              // localized in functions.php — same currency settings, same
+              // output shape. ?>
+        <span data-lafka-live-price><?php echo wp_kses_post( wc_price( $product->get_price() ) ); ?></span>
         <?php if ( $is_variable ): ?>
             <small><?php printf(
                 esc_html__( 'starting at %s', 'lafka-child' ),
