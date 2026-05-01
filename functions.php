@@ -1,9 +1,6 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-// P6-UX-1 + P6-UX-4 W3-T8: Customizer panels for Editorial templates.
-require_once __DIR__ . '/inc/customizer-editorial.php';
-
 add_action( 'wp_enqueue_scripts', 'lafka_child_enqueue_styles', 20 );
 function lafka_child_enqueue_styles() {
 	// Parent already enqueues 'lafka-style' and 'lafka-responsive' — just add child after them.
@@ -207,33 +204,4 @@ add_action( 'wp', function () {
 		remove_action( 'woocommerce_shop_loop_header', 'woocommerce_product_taxonomy_archive_header' );
 	}
 } );
-
-/**
- * P6-UX-1 / P6-UX-4 W3-T8: enqueue editorial design system (Fraunces font +
- * editorial.css) ONLY on pages using the editorial templates. Zero perf impact
- * on the rest of the site.
- *
- * @font-face declarations for Fraunces live inside editorial.css, so they
- * automatically inherit this conditional enqueue — no separate wp_enqueue_style
- * call needed for the font files.
- */
-add_action( 'wp_enqueue_scripts', 'lafka_editorial_assets_enqueue', 30 );
-function lafka_editorial_assets_enqueue() {
-	if ( ! is_page() ) {
-		return;
-	}
-	$editorial_templates = array(
-		'page-templates/template-editorial-home.php',
-		'page-templates/template-editorial-contact.php',
-	);
-	if ( ! is_page_template( $editorial_templates ) ) {
-		return;
-	}
-	wp_enqueue_style(
-		'lafka-editorial',
-		get_stylesheet_directory_uri() . '/styles/editorial.css',
-		array( 'lafka-child-style' ),
-		wp_get_theme()->get( 'Version' )
-	);
-}
 
