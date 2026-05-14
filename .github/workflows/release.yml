@@ -5,9 +5,15 @@ on:
     tags:
       - 'v*'
 
+# `contents: write` is required so the gh CLI can create / update the
+# GitHub Release. No other write scopes needed.
 permissions:
   contents: write
 
+# Two `git push --tags` racing against each other (e.g. ops manually
+# pushed a tag while a script was also pushing) shouldn't double-build.
+# `cancel-in-progress: false` because we want both releases to publish
+# — just not in parallel — if both tags are valid.
 concurrency:
   group: release-${{ github.ref }}
   cancel-in-progress: false
@@ -48,26 +54,25 @@ jobs:
                    ./ lafka-child/
           zip -r lafka-child.zip lafka-child/
 
+      # Integrity check operators can verify with `sha256sum -c`.
+      # Both files are uploaded to the GitHub Release.
       - name: Generate SHA256 checksum
         run: |
           sha256sum lafka-child.zip > lafka-child.zip.sha256
           cat lafka-child.zip.sha256
 
+      # Idempotent release publish via the pre-installed `gh` CLI.
+      # Race-free: create-tolerated + upload-clobber covers all states
+      # (release missing, release exists, partial assets, re-runs). No
+      # check-then-act window where a concurrent manual `gh release create`
+      # can wedge the workflow.
       - name: Create or update release
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ steps.version.outputs.tag }}
         run: |
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            echo "Release $TAG already exists — uploading assets with --clobber."
-            gh release upload "$TAG" \
-              lafka-child.zip \
-              lafka-child.zip.sha256 \
-              --clobber
-          else
-            gh release create "$TAG" \
-              --title "$TAG" \
-              --generate-notes \
-              lafka-child.zip \
-              lafka-child.zip.sha256
-          fi
+          gh release create "$TAG" --title "$TAG" --generate-notes || true
+          gh release upload "$TAG" \
+            lafka-child.zip \
+            lafka-child.zip.sha256 \
+            --clobber
