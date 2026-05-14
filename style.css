@@ -2,7 +2,7 @@
 Theme Name: Lafka Child
 Theme URI: https://github.com/setkernel/lafka-child
 Description: Thin override layer for the Lafka parent theme. Use this to add custom CSS overrides or your own filter hooks. As of v6.0.0, all product features (PDP redesign, editorial templates, performance utilities, promotions) live in the parent theme (lafka-theme >= 5.16.0) or the companion plugin (lafka-plugin >= 9.7.25). Requires both.
-Version: 6.0.0
+Version: 6.0.1
 Template: lafka
 Author: theAlThemist, Contributors
 Author URI: https://github.com/setkernel/lafka-child
@@ -83,6 +83,7 @@ img.vc_single_image-img {
     height: auto;
     max-width: 100%;
 }
+
 .wpb_single_image .vc_single_image-wrapper {
     contain: layout;
     line-height: 0;
@@ -102,12 +103,15 @@ img.vc_single_image-img {
     aspect-ratio: 16 / 9;
     contain: layout;
 }
+
 .vc_row.vc_row-has-fill.lafka-hero-row.lafka-hero-row--16x5 {
     aspect-ratio: 16 / 5;
 }
+
 .vc_row.vc_row-has-fill.lafka-hero-row.lafka-hero-row--4x3 {
     aspect-ratio: 4 / 3;
 }
+
 .vc_row.vc_row-has-fill.lafka-hero-row.lafka-hero-row--1x1 {
     aspect-ratio: 1 / 1;
 }
@@ -402,6 +406,7 @@ div.prod_hold .price_hold .price {
 
 /* C-UX-Audit-2026-04-29: sticky Add-to-Cart on mobile single product */
 @media (max-width: 768px) {
+
     .single-product .product .cart {
         position: sticky;
         bottom: 0;
@@ -412,6 +417,7 @@ div.prod_hold .price_hold .price {
         z-index: 50;
         border-top: 1px solid rgba(0, 0, 0, 0.06);
     }
+
     .single-product .product .cart .single_add_to_cart_button {
         width: 100%;
         font-size: 1rem;
@@ -435,6 +441,7 @@ div.prod_hold .price_hold .price {
 .woocommerce-cart .woocommerce {
     min-height: 60vh;
 }
+
 .woocommerce-cart-form__cart-item {
     min-height: 80px; /* approx 1 product row */
     contain: layout;
