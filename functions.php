@@ -41,3 +41,23 @@ function lafka_child_enqueue_styles() {
  * pagination wrappers, widget areas, etc.), see examples/customizations.php.example.
  * Copy the block you want into this functions.php to activate it.
  */
+
+/**
+ * Operator's hero background image (this install only).
+ *
+ * Preserves the yellow textured wash uploaded to the Media Library in
+ * 2021-06 for the original WPBakery hero. Lives in the child theme
+ * because it's a site-specific URL — parent theme stays clean of
+ * operator-specific values per the OSS distribution model.
+ *
+ * Remove this filter to fall back to the brand-yellow surface color.
+ */
+add_filter(
+	'lafka_home_hero_default_bg_url',
+	static function ( $url ) {
+		if ( '' !== $url ) {
+			return $url;
+		}
+		return home_url( '/wp-content/uploads/2021/06/yellow-lafka-hero-back-1.jpg' );
+	}
+);
