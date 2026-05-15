@@ -43,21 +43,15 @@ function lafka_child_enqueue_styles() {
  */
 
 /**
- * Operator's hero background image (this install only).
+ * Hero background image override (this install only).
  *
- * Preserves the yellow textured wash uploaded to the Media Library in
- * 2021-06 for the original WPBakery hero. Lives in the child theme
- * because it's a site-specific URL — parent theme stays clean of
- * operator-specific values per the OSS distribution model.
+ * v5.51.0: removed the yellow-lafka-hero-back-1.jpg default. The
+ * texture had lighter spots that dropped headline contrast below
+ * WCAG-AA per UX review. Hero now uses the parent theme's flat
+ * brand-50 surface for legibility.
  *
- * Remove this filter to fall back to the brand-yellow surface color.
+ * To use a brand-specific hero image on this install, either:
+ *  1. Customizer > Lafka — Home Page > Hero > Hero background image (media picker)
+ *  2. Add a callback to the lafka_home_hero_default_bg_url filter
+ *     returning your image URL (e.g. home_url('/wp-content/uploads/...')).
  */
-add_filter(
-	'lafka_home_hero_default_bg_url',
-	static function ( $url ) {
-		if ( '' !== $url ) {
-			return $url;
-		}
-		return home_url( '/wp-content/uploads/2021/06/yellow-lafka-hero-back-1.jpg' );
-	}
-);
