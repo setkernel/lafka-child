@@ -24,6 +24,16 @@ export default [
 			"no-prototype-builtins": "off",
 		},
 	},
+	// Node.js build scripts (ES modules) — e.g. scripts/sync-version.mjs.
+	{
+		files: ["scripts/**/*.mjs"],
+		languageOptions: {
+			sourceType: "module",
+			globals: {
+				...globals.node,
+			},
+		},
+	},
 	{
 		ignores: [
 			"vendor/**",
