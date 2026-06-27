@@ -1,6 +1,6 @@
 # Contributing to lafka-child
 
-This is the site-specific child theme of [lafka-theme](../lafka-theme). It only contains presentation tweaks and per-site customizations. **Business logic that should survive a theme switch belongs in [lafka-plugin](../lafka-plugin)** — for example, the BOGO promo and delivery-minimum features currently here are scheduled for migration there per `../LAFKA_AUDIT.md` §6 A-HIGH-1.
+This is the site-specific child theme of [lafka-theme](../lafka-theme) (currently v6.0.6). It only contains presentation tweaks and per-site customizations. **Business logic that should survive a theme switch belongs in [lafka-plugin](../lafka-plugin).** The BOGO promo and delivery-minimum migration called for in `../LAFKA_AUDIT.md` §6 A-HIGH-1 is **done** — those features now live in `../lafka-plugin/incl/promotions/` (`class-lafka-promotions.php` + admin). As a result the child is now genuinely thin: `functions.php` is ~57 lines and there is no `partials/` directory.
 
 ## Local development
 
