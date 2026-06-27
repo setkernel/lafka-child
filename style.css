@@ -2,7 +2,7 @@
 Theme Name: Lafka Child
 Theme URI: https://github.com/setkernel/lafka-child
 Description: Thin override layer for the Lafka parent theme. Use this to add custom CSS overrides or your own filter hooks. As of v6.0.0, all product features (PDP redesign, editorial templates, performance utilities, promotions) live in the parent theme (lafka-theme >= 5.16.0) or the companion plugin (lafka-plugin >= 9.7.25). Requires both.
-Version: 6.0.5
+Version: 6.0.6
 Template: lafka
 Author: theAlThemist, Contributors
 Author URI: https://github.com/setkernel/lafka-child
@@ -34,21 +34,11 @@ Requires PHP: 8.1
  * -------------------------------------------------------------------------- */
 
 /*
- * P6-PERF-2: reserve carousel slot height before Owl Carousel mounts.
- * The aspect-ratio is tuned to the common single-row carousel shape
- * (1280×400 hero / 1280×500 product carousel). When Owl mounts and sets
- * its own dimensions, this reservation is overridden by Owl's inline
- * styles — but in the pre-mount window the layout doesn't shift.
- *
- * If a specific carousel needs a different ratio, override per-instance:
+ * P6-PERF-2: the .lafka-owl-carousel pre-mount reservation moved to the parent
+ * theme (lafka-theme/styles/lafka-base.css) in v6.0.6 — the parent emits the
+ * carousels, so it owns the baseline. Override per-instance here if needed:
  *   .lafka-owl-carousel.is-hero { aspect-ratio: 1280 / 400; }
- *   .lafka-owl-carousel.is-product-grid { aspect-ratio: 1280 / 500; }
  */
-.lafka-owl-carousel:not(.owl-loaded) {
-    aspect-ratio: 1280 / 500;
-    overflow: hidden;
-    contain: layout;
-}
 
 /* Also reserve the WPBakery vc_lafka_content_slider before Owl init */
 [id^="lafka_content_slider"]:not(.owl-loaded) {
@@ -119,49 +109,13 @@ img.vc_single_image-img {
 
 /* ----------------------------------------------------------------------------
  * ACCESSIBILITY HELPERS
+ *
+ * v6.0.6: .section-subtitle, .foodmenu-unit-info .ingredients and the
+ * .screen-reader-text helper moved to the parent theme
+ * (lafka-theme/styles/lafka-base.css) — the parent emits that markup, so it
+ * owns the baseline a11y styling (audit 2026-06-27 #6). Re-add an override
+ * here only to diverge from the parent defaults.
  * -------------------------------------------------------------------------- */
-
-/* P6-SEO-9 / P6-A11Y-5: section-subtitle replaces misused <h6> for visual
-   subtitles that follow <h2> / <h1> headings (Lighthouse heading-order fix).
-   WCAG AA: #5e5e5e ≈ 4.6:1 on white (was #999 = 2.84:1 — non-compliant). */
-.section-subtitle {
-    text-align: center;
-    font-size: 14.3pt;
-    color: #5e5e5e;
-    font-weight: 400;
-    margin: 0 0 1em;
-    line-height: 1.4;
-}
-
-/* P6-SEO-9 / P6-A11Y-5: .ingredients replaces misused <h6> for food-item
-   ingredient text inside .foodmenu-unit-info. Preserves former h6 visual
-   (italic, 15px, #999, 0 0 8px margin). Semantic: descriptive content, not
-   a subtitle, so .section-subtitle is not appropriate here. */
-.foodmenu-unit-info .ingredients {
-    width: auto !important;
-    margin: 0 0 8px 0 !important;
-    font-size: 15px;
-    font-style: italic;
-    font-weight: 400;
-    color: #5e5e5e; /* C-A11Y-Audit-2026-04-29: #999→#5e5e5e, 4.6:1 WCAG AA (was 2.84:1) */
-    vertical-align: middle;
-}
-
-/* WP-standard visually-hidden helper. P6-A11Y-1: needed for Owl Carousel
-   navText labels. Non-decorative, but visually invisible. */
-.screen-reader-text {
-    border: 0;
-    clip: rect(1px, 1px, 1px, 1px);
-    -webkit-clip-path: inset(50%);
-    clip-path: inset(50%);
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    width: 1px;
-    word-wrap: normal !important;
-}
 
 
 /* ----------------------------------------------------------------------------
