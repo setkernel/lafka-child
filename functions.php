@@ -16,14 +16,10 @@ function lafka_child_enqueue_styles() {
 		wp_get_theme()->get( 'Version' )
 	);
 
-	if ( is_rtl() && file_exists( get_stylesheet_directory() . '/styles/rtl.css' ) ) {
-		wp_enqueue_style(
-			'lafka-child-rtl',
-			get_stylesheet_directory_uri() . '/styles/rtl.css',
-			array( 'lafka-child-style', 'lafka-rtl' ),
-			wp_get_theme()->get( 'Version' )
-		);
-	}
+	// No child RTL stylesheet is enqueued: the parent theme's 'lafka-rtl'
+	// already provides RTL base styling. A child override should only be
+	// added back here once styles/rtl.css actually contains CSS rules —
+	// shipping an empty stub would cost an extra request for no effect.
 
 	if ( file_exists( get_stylesheet_directory() . '/js/lafka-front.js' ) ) {
 		wp_enqueue_script(
