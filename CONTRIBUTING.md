@@ -1,6 +1,6 @@
 # Contributing to lafka-child
 
-This is the site-specific child theme of [lafka-theme](../lafka-theme). It only contains presentation tweaks and per-site customizations. **Business logic that should survive a theme switch belongs in [lafka-plugin](../lafka-plugin).** The BOGO promo and delivery-minimum migration flagged in `../AUDIT_2026-06-27.md` is **done** — those features now live in `../lafka-plugin/incl/promotions/` (`class-lafka-promotions.php` + admin). As a result the child is now genuinely thin: `functions.php` is ~57 lines and there is no `partials/` directory.
+This is the site-specific child theme of [lafka-theme](../lafka-theme). It only contains presentation tweaks and per-site customizations. **Business logic that should survive a theme switch belongs in [lafka-plugin](../lafka-plugin).** The BOGO promo and delivery-minimum migration is **done** — those features now live in `../lafka-plugin/incl/promotions/` (`class-lafka-promotions.php` + admin; the plugin module is default-OFF, so flip Lafka → Modules → Promotions when a site relied on the old child implementation). As a result the child is genuinely thin: `functions.php` is ~57 lines and there is no `partials/` directory. The active work tracker is `../ROADMAP_2026-07-05.md`.
 
 ## Local development
 
