@@ -51,6 +51,24 @@ final class ThinLayerTest extends TestCase {
 		}
 	}
 
+	/**
+	 * CONTRIBUTING.md must not point contributors at retired umbrella docs.
+	 * `LAFKA_AUDIT.md` and `LAFKA_PROGRESS.md` were both retired; the live
+	 * audit is `AUDIT_2026-06-27.md` and the active tracker is
+	 * `ROADMAP_2026-07-05.md` at the umbrella root. A stale reference sends a
+	 * new contributor to a file that no longer exists, so guard against it.
+	 */
+	public function test_contributing_references_no_retired_docs(): void {
+		$src = file_get_contents( dirname( __DIR__, 2 ) . '/CONTRIBUTING.md' );
+		foreach ( array( 'LAFKA_AUDIT.md', 'LAFKA_PROGRESS.md' ) as $retired ) {
+			$this->assertStringNotContainsString(
+				$retired,
+				$src,
+				"CONTRIBUTING.md references retired doc '{$retired}'. Point at AUDIT_2026-06-27.md / ROADMAP_2026-07-05.md instead."
+			);
+		}
+	}
+
 	public function test_enqueue_function_still_present(): void {
 		$src = file_get_contents( dirname( __DIR__, 2 ) . '/functions.php' );
 		$this->assertStringContainsString( 'function lafka_child_enqueue_styles', $src );
