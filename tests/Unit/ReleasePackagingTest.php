@@ -91,6 +91,8 @@ final class ReleasePackagingTest extends TestCase {
 			'style.css',
 			'screenshot.png',
 			'examples',
+			// GPLv2: recipients must receive the licence text.
+			'LICENSE',
 		);
 
 		foreach ( $runtime as $needle ) {

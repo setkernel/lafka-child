@@ -25,6 +25,9 @@ tags + GitHub Releases.
 - Two tests that pinned comment text and a bare-hex test that contradicted
   ThinLayerTest's sanctioned `:root` override block.
 
+### Fixed
+- The release zip now ships the GPL `LICENSE` (it was excluded).
+
 ### Security
 - Dev toolchain: PHP_CodeSniffer 3.13.6, WPCS 3.4.1, PHPCSUtils 1.2.3
   (clears three code-execution advisories in the lint toolchain).
