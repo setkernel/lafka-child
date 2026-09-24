@@ -1,6 +1,6 @@
 # Contributing to lafka-child
 
-This is the site-specific child theme of [lafka-theme](https://github.com/setkernel/lafka-theme). It holds only per-install presentation overrides. **Business logic that should survive a theme switch belongs in [lafka-plugin](https://github.com/setkernel/lafka-plugin); default feature styling belongs in lafka-theme.** `ThinLayerTest` enforces this: `functions.php` stays small, carries no product-feature symbols, and `style.css` holds no parent-owned selectors or hardcoded hex colors outside a `:root { --lafka-*: … }` override block.
+This is the site-specific child theme of [lafka-theme](https://github.com/setkernel/lafka-theme). It holds only per-install presentation overrides. **Business logic that should survive a theme switch belongs in [lafka-plugin](https://github.com/setkernel/lafka-plugin); default feature styling belongs in lafka-theme.** `ThinLayerTest` enforces this: `functions.php` stays under 120 lines, and `style.css` holds no parent-owned selectors or hardcoded hex colors outside a `:root { --lafka-*: … }` override block.
 
 The BOGO promo and delivery-minimum features live in the plugin's Promotions module (`incl/promotions/`), which is default-OFF — flip **Lafka → Modules → Promotions** on any site that relied on the old child implementation.
 
