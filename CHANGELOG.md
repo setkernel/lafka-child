@@ -4,7 +4,7 @@ All notable changes to lafka-child are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/). Older history lives in git
 tags + GitHub Releases.
 
-## [Unreleased]
+## [6.2.0] — 2026-09-24
 
 ### Changed
 - `style.css` trimmed to the header + the active page-builder CLS rules
