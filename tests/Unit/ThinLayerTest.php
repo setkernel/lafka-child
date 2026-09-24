@@ -53,18 +53,18 @@ final class ThinLayerTest extends TestCase {
 
 	/**
 	 * CONTRIBUTING.md must not point contributors at retired umbrella docs.
-	 * `LAFKA_AUDIT.md` and `LAFKA_PROGRESS.md` were both retired; the live
-	 * audit is `AUDIT_2026-06-27.md` and the active tracker is
-	 * `ROADMAP_2026-07-05.md` at the umbrella root. A stale reference sends a
-	 * new contributor to a file that no longer exists, so guard against it.
+	 * `LAFKA_AUDIT.md`, `LAFKA_PROGRESS.md` and `AUDIT_2026-06-27.md` were all
+	 * retired; the active tracker is `ROADMAP_2026-07-05.md` at the umbrella
+	 * root. A stale reference sends a new contributor to a file that no longer
+	 * exists, so guard against it.
 	 */
 	public function test_contributing_references_no_retired_docs(): void {
 		$src = file_get_contents( dirname( __DIR__, 2 ) . '/CONTRIBUTING.md' );
-		foreach ( array( 'LAFKA_AUDIT.md', 'LAFKA_PROGRESS.md' ) as $retired ) {
+		foreach ( array( 'LAFKA_AUDIT.md', 'LAFKA_PROGRESS.md', 'AUDIT_2026-06-27.md' ) as $retired ) {
 			$this->assertStringNotContainsString(
 				$retired,
 				$src,
-				"CONTRIBUTING.md references retired doc '{$retired}'. Point at AUDIT_2026-06-27.md / ROADMAP_2026-07-05.md instead."
+				"CONTRIBUTING.md references retired doc '{$retired}'. Point at ROADMAP_2026-07-05.md instead."
 			);
 		}
 	}
@@ -91,11 +91,11 @@ final class ThinLayerTest extends TestCase {
 	 * carry only per-install overrides; styling for markup the PARENT theme or
 	 * the lafka-plugin emit belongs in lafka-theme/styles/lafka-base.css (the
 	 * SSOT), tokenised from --lafka-*. Mirrors the v6.0.6 carousel/a11y and
-	 * f022 grouped-menu moves already documented in style.css.
+	 * f022 grouped-menu moves into the parent.
 	 *
-	 * Comments are stripped first: the file documents past migrations by NAMING
-	 * the moved selectors in prose, and its header invites pasting commented-out
-	 * override EXAMPLES — only ACTIVE rules are inspected so neither is flagged.
+	 * Comments are stripped first so commented-out override examples pasted
+	 * from examples/style-overrides.css.example are never flagged — only
+	 * ACTIVE rules are inspected.
 	 */
 	public function test_style_css_holds_no_parent_owned_features(): void {
 		$raw = file_get_contents( dirname( __DIR__, 2 ) . '/style.css' );

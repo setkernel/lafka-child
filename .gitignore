@@ -13,8 +13,9 @@ Thumbs.db
 *.swo
 *~
 
-# Test artefacts
+# Test artefacts / local env
 .phpunit.result.cache
+.wp-env-uploads/
 
 # Misc
 *.log
