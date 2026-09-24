@@ -22,8 +22,11 @@ tags + GitHub Releases.
 
 ### Removed
 - Unused dev dependencies `brain/monkey` and `yoast/phpunit-polyfills`.
-- Two tests that pinned comment text and a bare-hex test that contradicted
-  ThinLayerTest's sanctioned `:root` override block.
+- Test suite cut from 26 to 7 tests: removed ratchets for code deleted long
+  ago (promotions/PDP/editorial/perf symbols, cart CLS, RTL stub, retired
+  literals), file/function-existence checks and doc-text pins. Kept the guards
+  that protect real behavior: the `Template: lafka` header, version SSOT,
+  release packaging, the functions.php size limit and style.css ownership.
 
 ### Fixed
 - The release zip now ships the GPL `LICENSE` (it was excluded).

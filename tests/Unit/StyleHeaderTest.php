@@ -17,10 +17,6 @@ final class StyleHeaderTest extends TestCase {
 
 	private const STYLE_PATH = __DIR__ . '/../../style.css';
 
-	public function test_style_css_exists(): void {
-		self::assertFileExists( self::STYLE_PATH );
-	}
-
 	public function test_required_headers_are_present(): void {
 		$header_block = $this->read_header_block();
 

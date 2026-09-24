@@ -6,11 +6,9 @@ namespace LafkaChild\Tests\Unit;
 use PHPUnit\Framework\TestCase;
 
 /**
- * v6.0.0 lock: lafka-child must remain a thin override layer.
- *
- * If a future commit re-introduces product features into the child theme,
- * this test fails — pushing the contributor to put the feature in the
- * parent theme or the plugin instead.
+ * lafka-child must remain a thin override layer: a small functions.php and a
+ * style.css that carries only per-install overrides. Product features belong
+ * in lafka-theme (appearance) or lafka-plugin (behavior).
  */
 final class ThinLayerTest extends TestCase {
 
@@ -23,86 +21,9 @@ final class ThinLayerTest extends TestCase {
 		);
 	}
 
-	public function test_no_promotions_symbols(): void {
-		$src = file_get_contents( dirname( __DIR__, 2 ) . '/functions.php' );
-		foreach ( array( 'bogo_50_', 'lafka_bogo_', 'lafka_child_should_block_delivery', 'LAFKA_CHILD_DELIVERY_MINIMUM' ) as $sym ) {
-			$this->assertStringNotContainsString( $sym, $src, "Promotions symbol '{$sym}' must live in lafka-plugin." );
-		}
-	}
-
-	public function test_no_pdp_redesign_symbols(): void {
-		$src = file_get_contents( dirname( __DIR__, 2 ) . '/functions.php' );
-		foreach ( array( 'lafka-pdp-redesign', 'lafka-cart-drawer', 'lafka-order-method', 'lafkaPdpCurrency', 'lafkaOrderMethodLabels' ) as $sym ) {
-			$this->assertStringNotContainsString( $sym, $src, "PDP-redesign symbol '{$sym}' must live in lafka-theme." );
-		}
-	}
-
-	public function test_no_editorial_symbols(): void {
-		$src = file_get_contents( dirname( __DIR__, 2 ) . '/functions.php' );
-		foreach ( array( 'lafka_editorial', 'template-editorial', 'editorial-home', 'editorial-contact' ) as $sym ) {
-			$this->assertStringNotContainsString( $sym, $src, "Editorial symbol '{$sym}' must live in lafka-theme." );
-		}
-	}
-
-	public function test_no_perf_helper_symbols(): void {
-		$src = file_get_contents( dirname( __DIR__, 2 ) . '/functions.php' );
-		foreach ( array( 'lafka_inject_image_dimensions', 'lafka_url_to_local_path', 'lafka_lcp_image_url' ) as $sym ) {
-			$this->assertStringNotContainsString( $sym, $src, "Perf helper '{$sym}' must live in lafka-plugin." );
-		}
-	}
-
 	/**
-	 * CONTRIBUTING.md must not point contributors at retired umbrella docs.
-	 * `LAFKA_AUDIT.md`, `LAFKA_PROGRESS.md` and `AUDIT_2026-06-27.md` were all
-	 * retired; the active tracker is `ROADMAP_2026-07-05.md` at the umbrella
-	 * root. A stale reference sends a new contributor to a file that no longer
-	 * exists, so guard against it.
-	 */
-	public function test_contributing_references_no_retired_docs(): void {
-		$src = file_get_contents( dirname( __DIR__, 2 ) . '/CONTRIBUTING.md' );
-		foreach ( array( 'LAFKA_AUDIT.md', 'LAFKA_PROGRESS.md', 'AUDIT_2026-06-27.md' ) as $retired ) {
-			$this->assertStringNotContainsString(
-				$retired,
-				$src,
-				"CONTRIBUTING.md references retired doc '{$retired}'. Point at ROADMAP_2026-07-05.md instead."
-			);
-		}
-	}
-
-	/**
-	 * f074: a child rebrand must set the handoff token names (every rebuilt
-	 * page reads them), not only the legacy --lafka-accent-color. The recipes
-	 * contributors copy from must steer them there.
-	 */
-	public function test_rebrand_recipes_name_the_handoff_tokens(): void {
-		$root = dirname( __DIR__, 2 ) . '/examples/';
-		foreach ( array( 'style-overrides.css.example', 'customizations.php.example' ) as $file ) {
-			$src = (string) file_get_contents( $root . $file );
-			foreach ( array( '--lafka-color-accent-500', '--lafka-color-brand-500' ) as $token ) {
-				$this->assertStringContainsString( $token, $src, "examples/{$file} must name the handoff token {$token}." );
-			}
-		}
-	}
-
-	public function test_enqueue_function_still_present(): void {
-		$src = file_get_contents( dirname( __DIR__, 2 ) . '/functions.php' );
-		$this->assertStringContainsString( 'function lafka_child_enqueue_styles', $src );
-	}
-
-	public function test_no_orphan_partials_directory(): void {
-		$child_root = dirname( __DIR__, 2 );
-		$this->assertFileDoesNotExist( $child_root . '/inc/customizer-editorial.php' );
-		$this->assertFileDoesNotExist( $child_root . '/inc/lafka-promotions.php' );
-		$this->assertFileDoesNotExist( $child_root . '/woocommerce/single-product.php' );
-		$this->assertFileDoesNotExist( $child_root . '/partials/cart-drawer.php' );
-		$this->assertFileDoesNotExist( $child_root . '/styles/editorial.css' );
-		$this->assertFileDoesNotExist( $child_root . '/styles/pdp-redesign.css' );
-	}
-
-	/**
-	 * style.css is the other place stranded product features accumulate — the
-	 * size/symbol guards above only read functions.php, so default-feature CSS
-	 * could (and did) drift into the child unnoticed. The child stylesheet must
+	 * style.css is the other place stranded product features accumulate:
+	 * default-feature CSS could (and did) drift into the child unnoticed. The child stylesheet must
 	 * carry only per-install overrides; styling for markup the PARENT theme or
 	 * the lafka-plugin emit belongs in lafka-theme/styles/lafka-base.css (the
 	 * SSOT), tokenised from --lafka-*. Mirrors the v6.0.6 carousel/a11y and
