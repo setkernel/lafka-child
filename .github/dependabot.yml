@@ -20,11 +20,15 @@ updates:
       interval: weekly
       day: monday
       time: '06:00'
-      timezone: 'America/Halifax'
+      timezone: 'UTC'
     open-pull-requests-limit: 5
     labels:
       - dependencies
       - composer
+    # Known peer ceiling: wp-coding-standards/wpcs 3.x requires PHPCS 3.x.
+    ignore:
+      - dependency-name: 'squizlabs/php_codesniffer'
+        update-types: ['version-update:semver-major']
     groups:
       composer-minor-and-patch:
         patterns: ['*']
@@ -38,11 +42,15 @@ updates:
       interval: weekly
       day: monday
       time: '06:00'
-      timezone: 'America/Halifax'
+      timezone: 'UTC'
     open-pull-requests-limit: 5
     labels:
       - dependencies
       - javascript
+    # Known peer ceiling: @wordpress/stylelint-config peers on stylelint ^16.
+    ignore:
+      - dependency-name: 'stylelint'
+        update-types: ['version-update:semver-major']
     groups:
       npm-minor-and-patch:
         patterns: ['*']
@@ -57,7 +65,7 @@ updates:
       interval: weekly
       day: monday
       time: '06:00'
-      timezone: 'America/Halifax'
+      timezone: 'UTC'
     open-pull-requests-limit: 5
     labels:
       - dependencies
