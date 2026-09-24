@@ -69,6 +69,21 @@ final class ThinLayerTest extends TestCase {
 		}
 	}
 
+	/**
+	 * f074: a child rebrand must set the handoff token names (every rebuilt
+	 * page reads them), not only the legacy --lafka-accent-color. The recipes
+	 * contributors copy from must steer them there.
+	 */
+	public function test_rebrand_recipes_name_the_handoff_tokens(): void {
+		$root = dirname( __DIR__, 2 ) . '/examples/';
+		foreach ( array( 'style-overrides.css.example', 'customizations.php.example' ) as $file ) {
+			$src = (string) file_get_contents( $root . $file );
+			foreach ( array( '--lafka-color-accent-500', '--lafka-color-brand-500' ) as $token ) {
+				$this->assertStringContainsString( $token, $src, "examples/{$file} must name the handoff token {$token}." );
+			}
+		}
+	}
+
 	public function test_enqueue_function_still_present(): void {
 		$src = file_get_contents( dirname( __DIR__, 2 ) . '/functions.php' );
 		$this->assertStringContainsString( 'function lafka_child_enqueue_styles', $src );
