@@ -1,0 +1,155 @@
+/*
+ * Lafka Child Theme — CSS override recipes
+ *
+ * Reference only: this file is never loaded. Copy a block into the child's
+ * style.css (which loads after the parent) to activate it. Prefer the
+ * Customizer (design preset, accent/brand colors, fonts) for anything it
+ * already exposes; use these for version-controlled per-install overrides.
+ *
+ * Token reference: lafka-theme/DESIGN_SYSTEM.md.
+ */
+
+
+/* ----------------------------------------------------------------------------
+ * COLOR OVERRIDES (CSS custom properties)
+ *
+ * Two color naming systems coexist in the parent:
+ *   - Handoff: --lafka-color-accent-500 / --lafka-color-brand-500
+ *              (every rebuilt page — PDP, home, /menu/, editorial, footer)
+ *   - Legacy:  --lafka-accent-color / --lafka-button-color (older surfaces)
+ * The Customizer "Accent color" already writes BOTH. A child-theme REBRAND
+ * must set both too — overriding only the legacy names changes the older
+ * surfaces while every rebuilt page keeps the shipped palette.
+ *
+ * Other commonly overridden legacy tokens:
+ *   links     --lafka-link-color, --lafka-link-hover-color
+ *   buttons   --lafka-button-hover-color, --lafka-add-to-cart-color
+ *   type      --lafka-body-font-family / -size / -color,
+ *             --lafka-headings-font-family, --lafka-h1…h6-color / -size / -weight
+ *   header    --lafka-header-bg-color, --lafka-logo-bg-color
+ *   product   --lafka-price-color, --lafka-price-bg-color,
+ *             --lafka-new-label-color, --lafka-sale-label-color
+ *   titles    --lafka-page-title-color, --lafka-page-title-bg-color,
+ *             --lafka-page-title-border-color
+ *   footer    --lafka-footer-bg-color, --lafka-footer-text-color,
+ *             --lafka-footer-link-color, --lafka-footer-title-color
+ *   sidebar   --lafka-sidebar-title-color
+ * -------------------------------------------------------------------------- */
+
+:root {
+    --lafka-color-accent-500: #e85d2a;
+    --lafka-color-brand-500: #f59e0b;
+    --lafka-accent-color: #e85d2a;
+    --lafka-button-color: #e85d2a;
+    --lafka-button-hover-color: #c44a1e;
+    --lafka-link-color: #e85d2a;
+    --lafka-link-hover-color: #c44a1e;
+}
+
+
+/* ----------------------------------------------------------------------------
+ * TYPOGRAPHY
+ * -------------------------------------------------------------------------- */
+
+body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+:root {
+    --lafka-h1-size: 36px;
+    --lafka-h2-size: 28px;
+}
+
+
+/* ----------------------------------------------------------------------------
+ * HEADER / NAVIGATION
+ * -------------------------------------------------------------------------- */
+
+#header {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+#main-menu ul.menu > li > a {
+    letter-spacing: 0.5px;
+}
+
+
+/* ----------------------------------------------------------------------------
+ * PRODUCT CARDS (shop loop)
+ * -------------------------------------------------------------------------- */
+
+div.prod_hold {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+div.prod_hold .name h3 {
+    font-size: 15px;
+}
+
+div.prod_hold .price_hold .price {
+    font-weight: 600;
+}
+
+
+/* ----------------------------------------------------------------------------
+ * SINGLE PRODUCT
+ * -------------------------------------------------------------------------- */
+
+#content div.product div.summary h1.product_title {
+    font-size: 32px;
+}
+
+.lafka-prep-time {
+    display: inline-block;
+    padding: 4px 10px;
+    background: var(--lafka-color-brand-50);
+    border-radius: 4px;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+
+/* ----------------------------------------------------------------------------
+ * FOOTER
+ * -------------------------------------------------------------------------- */
+
+#footer {
+    background-color: var(--lafka-color-text-primary);
+}
+
+#footer .widget h3 {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+
+/* ----------------------------------------------------------------------------
+ * MOBILE STICKY ADD-TO-CART surface (parent owns the bar — .lafka-sticky-cart
+ * in lafka-theme/styles/lafka-sticky-cart.css; keep overrides tokenised)
+ * -------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+    .lafka-sticky-cart {
+        background: var(--lafka-color-surface-page);
+    }
+}
+
+
+/* ----------------------------------------------------------------------------
+ * MOBILE ADJUSTMENTS
+ * -------------------------------------------------------------------------- */
+
+@media only screen and (max-width: 768px) {
+    #header {
+        padding: 10px 0;
+    }
+
+    div.prod_hold .name h3 {
+        font-size: 13px;
+    }
+
+    #content div.product div.summary h1.product_title {
+        font-size: 22px;
+    }
+}

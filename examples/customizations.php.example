@@ -8,9 +8,11 @@
  * DO NOT include this file directly — it is not a PHP file that WordPress loads.
  * It lives here as reference documentation only.
  *
- * The parent theme's options panel (Appearance > Theme Options) handles most
- * settings. Use these hooks when you need logic the options panel can't provide,
- * or when you want version-controlled overrides.
+ * The Customizer (Appearance > Customize — design preset, colors, fonts,
+ * layout) handles most settings. Use these hooks when you need logic the
+ * Customizer can't provide, or when you want version-controlled overrides.
+ * CSS recipes live in style-overrides.css.example; JS recipes in
+ * lafka-front.js.example.
  */
 
 // phpcs:disable Squiz.PHP.CommentedOutCode.Found -- examples are intentional documentation
@@ -63,7 +65,9 @@
 /*
  * 5. Override theme colors with CSS custom properties
  *    Action: wp_head — outputs a <style> block that overrides :root variables.
- *    See dynamic-css.php for the full list of --lafka-* variables.
+ *    Token reference: lafka-theme/DESIGN_SYSTEM.md. A rebrand must set the
+ *    --lafka-color-* ramp anchors (rebuilt pages) AND the legacy
+ *    --lafka-accent-color / --lafka-button-color (older surfaces).
  */
 /*
 add_action( 'wp_head', 'lafka_child_color_overrides', 100 );
@@ -71,6 +75,8 @@ function lafka_child_color_overrides() {
 	?>
 	<style>
 		:root {
+			--lafka-color-accent-500: #e85d2a;
+			--lafka-color-brand-500: #f59e0b;
 			--lafka-accent-color: #e85d2a;
 			--lafka-button-color: #e85d2a;
 			--lafka-button-hover-color: #c44a1e;

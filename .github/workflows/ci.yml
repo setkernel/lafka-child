@@ -37,10 +37,9 @@ concurrency:
 # POLICY: This workflow uses ONLY first-party GitHub-org actions
 # (actions/*, github/*). No community actions. Multi-PHP matrix testing
 # was traded for this constraint — we test against ubuntu-latest's
-# pre-installed PHP (currently 8.3) which matches prod. Plugin's PHP
-# floor (8.1) is documented in the lafka-plugin.php header and enforced
-# by Requires PHP — runtime will surface syntax issues if anyone ships
-# 8.4-only constructs.
+# pre-installed PHP (currently 8.3) which matches prod. The child's PHP
+# floor (8.1) is `Requires PHP` in the style.css header and is checked
+# statically by PHPCompatibilityWP in PHPCS.
 
 jobs:
   lint-js-css:

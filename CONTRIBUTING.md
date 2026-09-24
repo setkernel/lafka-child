@@ -1,6 +1,8 @@
 # Contributing to lafka-child
 
-This is the site-specific child theme of [lafka-theme](../lafka-theme). It only contains presentation tweaks and per-site customizations. **Business logic that should survive a theme switch belongs in [lafka-plugin](../lafka-plugin).** The BOGO promo and delivery-minimum migration is **done** — those features now live in `../lafka-plugin/incl/promotions/` (`class-lafka-promotions.php` + admin; the plugin module is default-OFF, so flip Lafka → Modules → Promotions when a site relied on the old child implementation). As a result the child is genuinely thin: `functions.php` is ~57 lines and there is no `partials/` directory. The active work tracker is `../ROADMAP_2026-07-05.md`.
+This is the site-specific child theme of [lafka-theme](https://github.com/setkernel/lafka-theme). It holds only per-install presentation overrides. **Business logic that should survive a theme switch belongs in [lafka-plugin](https://github.com/setkernel/lafka-plugin); default feature styling belongs in lafka-theme.** `ThinLayerTest` enforces this: `functions.php` stays under 120 lines, and `style.css` holds no parent-owned selectors or hardcoded hex colors outside a `:root { --lafka-*: … }` override block.
+
+The BOGO promo and delivery-minimum features live in the plugin's Promotions module (`incl/promotions/`), which is default-OFF — flip **Lafka → Modules → Promotions** on any site that relied on the old child implementation.
 
 ## Local development
 
@@ -8,43 +10,44 @@ This is the site-specific child theme of [lafka-theme](../lafka-theme). It only 
 npm ci
 composer install
 
-# Boot WP + WC + parent theme + this child
+# Boot WP + WooCommerce + lafka-plugin + the parent theme + this child
 npx @wordpress/env start
 # WP runs at http://localhost:8885
 ```
 
-The `.wp-env.json` mounts `../lafka-theme` as a sibling theme so the parent is loaded.
+`.wp-env.json` expects `lafka-theme` and `lafka-plugin` checked out as siblings of this repo.
 
 ## Before opening a PR
 
 ```bash
 npm run lint        # ESLint + Stylelint
-composer phpcs
-composer phpcbf
+composer phpcs      # WordPress-Extra (composer phpcbf auto-fixes)
+composer test       # PHPUnit
 ```
 
-CI runs the same on every PR (see `.github/workflows/ci.yml`).
+CI (`.github/workflows/ci.yml`) runs the version-SSOT check plus all three; the `.githooks/pre-push` hook runs the three locally.
 
-## What goes here vs. plugin
+## What goes here vs. elsewhere
 
-| In the child theme (this repo) | In the plugin |
-|--------------------------------|---------------|
-| CSS variable overrides for parent tokens | Anything that registers a CPT or taxonomy |
-| Per-site copy / wording | Anything that owns commerce data (orders, products, addons) |
-| Template overrides for visual tweaks | Anything that hooks into WC cart/checkout math |
-| Front-end JS overrides via `js/lafka-front.js` | Anything that defines a shortcode or widget |
-| Site-specific banners / promo UI | Anything that needs admin settings UI |
+| In the child theme (this repo) | In lafka-theme | In lafka-plugin |
+|---|---|---|
+| `--lafka-*` token overrides in `style.css` | Default styling for anything the parent or plugin emits | CPTs, taxonomies, shortcodes, widgets |
+| Per-install CSS for page-builder content on this site | Templates and template overrides | Commerce data, cart/checkout math, promotions |
+| Small filter/action tweaks in `functions.php` | Customizer controls, presets, fonts | Admin settings screens |
+| Opt-in JS overrides (`js/lafka-front.js`) | | |
+
+Copy-ready recipes: `examples/customizations.php.example` (PHP hooks), `examples/style-overrides.css.example` (CSS), `examples/lafka-front.js.example` (JS — copy to `js/lafka-front.js` to activate; it is only enqueued when present).
 
 ## Coding standards
 
 - WordPress-Extra (PHPCS).
 - Min PHP 8.1, min WP 6.6.
 - Text domain: `lafka` (inherited from parent).
-- Banner / inline JS / inline CSS in `functions.php` is acceptable for one-off site features but should be extracted to `js/` and `styles/` once it grows past ~30 lines.
+- If a tweak grows past a few dozen lines, it is probably a feature — move it to lafka-theme or lafka-plugin.
 
 ## Releases
 
-Tagging `vX.Y.Z` triggers `.github/workflows/release.yml`, which builds an installable zip excluding dev files.
+`npm version <patch|minor|major>` bumps `package.json` (canonical) and syncs the `style.css` header. Pushing the `vX.Y.Z` tag runs `.github/workflows/release.yml`, which builds an installable zip excluding dev files.
 
 ## Security
 

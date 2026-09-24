@@ -3,8 +3,9 @@
     "use strict";
 
     /**
-     * Use this file to override JavaScript functions defined in the
-     * parent theme's lafka-front.js.
+     * Copy this file to js/lafka-front.js to activate it (functions.php
+     * enqueues it only when present). Use it to override JavaScript
+     * functions defined in the parent theme's lafka-front.js.
      *
      * The parent theme exposes several functions on `window` that you
      * can redefine here. Because this script loads after the parent
@@ -45,7 +46,7 @@
      * Adds a class to the body when the mobile menu is toggled.
      * -------------------------------------------------------------------- */
     // $(document).ready(function () {
-    //     $('a.mob-menu-toggle').on('click', function () {
+    //     $('[data-lafka-menu-toggle]').on('click', function () {
     //         $('body').toggleClass('child-mobile-menu-open');
     //     });
     // });

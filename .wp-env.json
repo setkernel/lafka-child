@@ -1,11 +1,11 @@
 {
-	"core": "WordPress/WordPress#6.9.4",
-	"phpVersion": "8.2",
+	"core": "WordPress/WordPress#7.0",
+	"phpVersion": "8.4",
 	"plugins": [
-		"https://downloads.wordpress.org/plugin/woocommerce.10.7.0.zip"
+		"../lafka-plugin",
+		"https://downloads.wordpress.org/plugin/woocommerce.10.9.1.zip"
 	],
 	"themes": [
-		"../lafka-theme",
 		"."
 	],
 	"config": {
@@ -16,6 +16,7 @@
 		"WP_ENVIRONMENT_TYPE": "development"
 	},
 	"mappings": {
+		"wp-content/themes/lafka": "../lafka-theme",
 		"wp-content/uploads": "./.wp-env-uploads"
 	},
 	"port": 8885,

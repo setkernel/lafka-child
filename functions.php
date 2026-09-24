@@ -21,6 +21,8 @@ function lafka_child_enqueue_styles() {
 	// added back here once styles/rtl.css actually contains CSS rules —
 	// shipping an empty stub would cost an extra request for no effect.
 
+	// Opt-in JS overrides: copy examples/lafka-front.js.example to
+	// js/lafka-front.js. Absent by default, so no empty script ships.
 	if ( file_exists( get_stylesheet_directory() . '/js/lafka-front.js' ) ) {
 		wp_enqueue_script(
 			'lafka-child-front',

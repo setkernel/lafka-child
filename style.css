@@ -1,7 +1,7 @@
 /*
 Theme Name: Lafka Child
 Theme URI: https://github.com/setkernel/lafka-child
-Description: Thin override layer for the Lafka parent theme. Use this to add custom CSS overrides or your own filter hooks. As of v6.0.0, all product features (PDP redesign, editorial templates, performance utilities, promotions) live in the parent theme (lafka-theme >= 5.16.0) or the companion plugin (lafka-plugin >= 9.7.25). Requires both.
+Description: Thin override layer for the Lafka parent theme. Use this to add custom CSS overrides or your own filter hooks. All product features live in the parent theme (lafka-theme >= 7.0.0) or the companion plugin (lafka-plugin >= 10.0.0). Requires both.
 Version: 6.1.0
 Template: lafka
 Author: theAlThemist, Contributors
@@ -19,26 +19,21 @@ Requires PHP: 8.1
  * HOW TO USE THIS FILE
  * ============================================================================
  *
- * This stylesheet loads AFTER the parent theme's style.css, so any rule here
- * overrides the parent. Uncomment a section to activate it.
+ * This stylesheet loads AFTER the parent theme's stylesheets, so any rule here
+ * overrides the parent. Keep it to per-install overrides only — default
+ * feature styling belongs in lafka-theme (ThinLayerTest enforces this).
  *
- * The parent theme uses CSS custom properties (--lafka-*) for colors, defined
- * in :root via dynamic-css.php. Override them here for instant color changes
- * without touching PHP.
+ * Colors/fonts: prefer the Customizer (design preset, accent, brand). For
+ * version-controlled overrides, set --lafka-* tokens in an uncommented
+ * :root { … } block here. Copy-ready recipes: examples/style-overrides.css.example.
  * ============================================================================
  */
 
 
 /* ----------------------------------------------------------------------------
- * PERFORMANCE: CLS RESERVATIONS (P6-PERF-2)
+ * PERFORMANCE: CLS RESERVATIONS for page-builder markup on this install
+ * (the parent owns .lafka-owl-carousel; lafka-theme/styles/lafka-base.css)
  * -------------------------------------------------------------------------- */
-
-/*
- * P6-PERF-2: the .lafka-owl-carousel pre-mount reservation moved to the parent
- * theme (lafka-theme/styles/lafka-base.css) in v6.0.6 — the parent emits the
- * carousels, so it owns the baseline. Override per-instance here if needed:
- *   .lafka-owl-carousel.is-hero { aspect-ratio: 1280 / 400; }
- */
 
 /* Also reserve the WPBakery vc_lafka_content_slider before Owl init */
 [id^="lafka_content_slider"]:not(.owl-loaded) {
@@ -105,237 +100,3 @@ img.vc_single_image-img {
 .vc_row.vc_row-has-fill.lafka-hero-row.lafka-hero-row--1x1 {
     aspect-ratio: 1 / 1;
 }
-
-
-/* ----------------------------------------------------------------------------
- * ACCESSIBILITY HELPERS
- *
- * v6.0.6: .section-subtitle, .foodmenu-unit-info .ingredients and the
- * .screen-reader-text helper moved to the parent theme
- * (lafka-theme/styles/lafka-base.css) — the parent emits that markup, so it
- * owns the baseline a11y styling (audit 2026-06-27 #6). Re-add an override
- * here only to diverge from the parent defaults.
- * -------------------------------------------------------------------------- */
-
-
-/* ----------------------------------------------------------------------------
- * COLOR OVERRIDES (CSS Custom Properties)
- *
- * Override any --lafka-* variable (93 total). Full list in parent dynamic-css.php.
- *
- * IMPORTANT (f074): there are TWO color naming systems in the parent.
- *   - Legacy:  --lafka-accent-color / --lafka-button-color  (WPBakery surfaces)
- *   - Handoff: --lafka-color-accent-500 / --lafka-color-brand-500
- *              (every rebuilt page — PDP, home, /menu/, editorial, footer)
- * The parent already mirrors the Customizer "Accent color" into BOTH
- * --lafka-accent-color AND --lafka-color-accent-500 (see dynamic-css.php),
- * so for a simple accent change just use the Customizer. A child-theme color
- * REBRAND, however, MUST also set the handoff token names below — if you
- * override only the legacy --lafka-accent-color, the old WPBakery surfaces
- * will change while every rebuilt page keeps the shipped red/yellow.
- *
- * Commonly overridden:
- *   --lafka-accent-color             Legacy accent (WPBakery surfaces)
- *   --lafka-color-accent-500         Handoff accent (rebuilt pages) — set this too
- *   --lafka-color-brand-500          Handoff brand ramp anchor (pepper-yellow)
- *   --lafka-link-color               Default link color
- *   --lafka-link-hover-color         Link hover color
- *   --lafka-button-color             Button background
- *   --lafka-button-hover-color       Button hover background
- *
- * Typography:
- *   --lafka-body-font-family         Body font stack
- *   --lafka-body-font-size           Body font size
- *   --lafka-body-font-color          Body text color
- *   --lafka-headings-font-family     Headings font stack
- *   --lafka-h1-color … h6-color      Heading colors
- *   --lafka-h1-size  … h6-size       Heading sizes
- *   --lafka-h1-weight … h6-weight    Heading weights
- *
- * Header & Menu:
- *   --lafka-header-bg-color          Header background
- *   --lafka-logo-bg-color            Logo background
- *   --lafka-menu-bg-color            Main menu background
- *   --lafka-menu-link-color          Menu link text
- *   --lafka-menu-link-hover-color    Menu link hover text
- *   --lafka-menu-link-bg-hover-color Menu link hover background
- *
- * Product:
- *   --lafka-price-color              Product price text
- *   --lafka-price-bg-color           Product price background
- *   --lafka-add-to-cart-color        Add-to-cart button color
- *   --lafka-new-label-color          "New" product badge
- *   --lafka-sale-label-color         Sale badge
- *
- * Page Titles:
- *   --lafka-page-title-color         Page/archive title text
- *   --lafka-page-title-bg-color      Title section background
- *   --lafka-page-title-border-color  Title section border
- *
- * Footer:
- *   --lafka-footer-bg-color          Footer background
- *   --lafka-footer-text-color        Footer body text
- *   --lafka-footer-link-color        Footer links
- *   --lafka-footer-title-color       Footer widget titles
- *   --lafka-footer-copyright-bg-color Copyright bar background
- *
- * Sidebar:
- *   --lafka-sidebar-title-color      Widget titles
- * -------------------------------------------------------------------------- */
-
-/*
-:root {
-    --lafka-accent-color: #e85d2a;
-    --lafka-color-accent-500: #e85d2a;
-    --lafka-color-brand-500: #f59e0b;
-    --lafka-button-color: #e85d2a;
-    --lafka-button-hover-color: #c44a1e;
-    --lafka-link-color: #e85d2a;
-    --lafka-link-hover-color: #c44a1e;
-}
-*/
-
-
-/* ----------------------------------------------------------------------------
- * TYPOGRAPHY OVERRIDES
- * -------------------------------------------------------------------------- */
-
-/*
-body {
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
-:root {
-    --lafka-h1-size: 36px;
-    --lafka-h2-size: 28px;
-}
-*/
-
-
-/* ----------------------------------------------------------------------------
- * HEADER / NAVIGATION
- * -------------------------------------------------------------------------- */
-
-/*
-#header {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-#main-menu ul.menu > li > a {
-    letter-spacing: 0.5px;
-}
-*/
-
-
-/* ----------------------------------------------------------------------------
- * PRODUCT CARDS (shop loop)
- * -------------------------------------------------------------------------- */
-
-/*
-div.prod_hold {
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-div.prod_hold .name h3 {
-    font-size: 15px;
-}
-
-div.prod_hold .price_hold .price {
-    font-weight: 600;
-}
-*/
-
-
-/* ----------------------------------------------------------------------------
- * SINGLE PRODUCT
- * -------------------------------------------------------------------------- */
-
-/*
-#content div.product div.summary h1.product_title {
-    font-size: 32px;
-}
-
-.lafka-prep-time {
-    display: inline-block;
-    padding: 4px 10px;
-    background: #fef3e6;
-    border-radius: 4px;
-    font-size: 13px;
-    margin-bottom: 10px;
-}
-*/
-
-
-/* ----------------------------------------------------------------------------
- * FOOTER
- * -------------------------------------------------------------------------- */
-
-/*
-#footer {
-    background-color: var(--lafka-color-text-primary);
-}
-
-#footer .widget h3 {
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-*/
-
-
-/* ----------------------------------------------------------------------------
- * MOBILE ADJUSTMENTS (max-width: 768px)
- * -------------------------------------------------------------------------- */
-
-/*
-@media only screen and (max-width: 768px) {
-    #header {
-        padding: 10px 0;
-    }
-
-    div.prod_hold .name h3 {
-        font-size: 13px;
-    }
-
-    #content div.product div.summary h1.product_title {
-        font-size: 22px;
-    }
-}
-*/
-
-/* P6-UX-7: PRICE PRESENTATION CONSISTENCY styling moved to the PARENT baseline
- * (lafka-theme/styles/lafka-base.css) — Audit 2026-06-28 (f095). WooCommerce and
- * the parent's own product templates emit .price / .woocommerce-Price-amount on
- * every surface (shop loop, PDP, widgets, cart), so these product-wide defaults
- * (tabular-nums digits, muted .price del strike-through, no-underline .price ins)
- * belong in the parent for the whole OSS bundle — not just this private child. No
- * per-install divergence is needed here. */
-
-
-/* P6-UX-6: GROUPED MOBILE MENU styling moved to the PARENT baseline
- * (lafka-theme/styles/lafka-base.css) — Audit 2026-06-28 (f022). The plugin
- * walker emits the .lafka-mobile-menu-group* markup, so the theme owns its
- * appearance for the whole OSS bundle, not just this private child. Tokenised
- * there from --lafka-*; no per-install divergence is needed here. */
-
-
-/* ----------------------------------------------------------------------------
- * MOBILE STICKY ADD-TO-CART
- *
- * P6-UX-8: this styling moved to the PARENT baseline
- * (lafka-theme/styles/lafka-base.css) — Audit 2026-06-28. The original
- * C-UX-Audit-2026-04-29 rule made the WooCommerce-emitted single-product cart
- * form sticky to the viewport bottom on mobile (≤768px) so the Add-to-Cart
- * action stays visible past the image + ingredient list + variant selectors.
- * WooCommerce emits that cart markup on every product, so the behaviour is a
- * default product feature the parent owns for the whole OSS bundle: it now
- * ships as the tokenised .lafka-sticky-cart bar in the parent baseline.
- *
- * No per-install divergence is needed here. To diverge from the parent default
- * on this install, override the parent's sticky bar surface (still tokenised so
- * Customizer / :root / dark-mode recoloring keeps working — audit f057), e.g.:
- *
- *   @media (max-width: 768px) {
- *       .lafka-sticky-cart { background: var(--lafka-color-surface-page); }
- *   }
- * -------------------------------------------------------------------------- */
