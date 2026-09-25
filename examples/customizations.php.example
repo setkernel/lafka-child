@@ -123,4 +123,24 @@ function lafka_child_color_overrides() {
 //     echo '</div>';
 // }
 
+/*
+ * 9. Log from a child-theme override (shows up in WooCommerce > Status > Logs,
+ *    source "lafka-child"; warnings and errors also on Lafka > Diagnostics)
+ *    Action: lafka_log (Lafka plugin) — no hard dependency: if the plugin is
+ *    inactive nothing listens and nothing happens. Personal data (emails,
+ *    phones, addresses) is scrubbed by the plugin before it is written.
+ *    Levels: debug, info, notice, warning, error, critical. Below "warning"
+ *    is only kept when WP_DEBUG is on.
+ */
+// $response = wp_remote_get( 'https://example.test/api/menu-feed' );
+// if ( is_wp_error( $response ) ) {
+//     do_action(
+//         'lafka_log',
+//         'warning',                          // level
+//         'child',                            // channel -> WC log source "lafka-child"
+//         'Menu feed request failed: ' . $response->get_error_message(),
+//         array( 'code' => 'menu_feed_failed' ) // context: machine codes / ids only
+//     );
+// }
+
 // phpcs:enable Squiz.PHP.CommentedOutCode.Found
