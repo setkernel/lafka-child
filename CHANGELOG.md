@@ -6,10 +6,15 @@ tags + GitHub Releases.
 
 ## [Unreleased]
 
+## [6.3.0] — 2026-09-25
+
 ### Added
 - `examples/customizations.php.example` recipe 9: log from a child override
   through the Lafka plugin's `lafka_log` action (WooCommerce logs, source
   `lafka-child`, personal data scrubbed; no hard dependency on the plugin).
+
+### Changed
+- Tested up to WordPress 7.1 / WooCommerce 11.1 (wp-env pins WP 7.1.2 + WC 11.1.2); stylelint 17 + @wordpress/stylelint-config 26; PHPCompatibility 10 so PHP 8.x compatibility is checked.
 
 ## [6.2.0] — 2026-09-24
 
