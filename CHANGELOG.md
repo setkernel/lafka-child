@@ -4,6 +4,13 @@ All notable changes to lafka-child are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/). Older history lives in git
 tags + GitHub Releases.
 
+## [Unreleased]
+
+### Added
+- `examples/customizations.php.example` recipe 9: log from a child override
+  through the Lafka plugin's `lafka_log` action (WooCommerce logs, source
+  `lafka-child`, personal data scrubbed; no hard dependency on the plugin).
+
 ## [6.2.0] — 2026-09-24
 
 ### Changed
