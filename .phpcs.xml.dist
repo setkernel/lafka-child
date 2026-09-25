@@ -19,7 +19,8 @@
 		<exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
 	</rule>
 
-	<!-- Check for cross-version PHP compatibility (PHP 7.4 EOL'd 2022; 8.0 EOL'd 2023; 8.1 EOL'd 2024) -->
+	<!-- Cross-version PHP compatibility against the 8.1 floor. PHPCompatibility
+	     10 (alpha, same as lafka-plugin) is required: 9.3.5 has no PHP 8.x sniffs. -->
 	<config name="testVersion" value="8.1-"/>
 	<rule ref="PHPCompatibilityWP"/>
 
